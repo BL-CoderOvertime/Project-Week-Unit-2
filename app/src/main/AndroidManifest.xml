@@ -11,8 +11,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".UserHistoryActivity"
-            android:label="@string/title_activity_user_history"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/title_activity_user_history"/>
         <activity android:name=".MenuItemListActivity" />
         <activity
             android:name=".ui.login.UserLoginActivity"
