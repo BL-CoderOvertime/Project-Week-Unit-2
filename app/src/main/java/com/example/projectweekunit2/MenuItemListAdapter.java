@@ -1,5 +1,6 @@
 package com.example.projectweekunit2;
 
+import android.app.Activity;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,9 +15,11 @@ import java.util.ArrayList;
 
 public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapter.ViewHolder> {
 	ArrayList<MenuItem> menuItems;
+	Activity activity;
 	
-	public MenuItemListAdapter(ArrayList<MenuItem> menuItems) {
+	public MenuItemListAdapter(ArrayList<MenuItem> menuItems, Activity activity) {
 		this.menuItems = menuItems;
+		this.activity = activity;
 	}
 	
 	class ViewHolder extends RecyclerView.ViewHolder{
@@ -49,9 +52,13 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 			@Override
 			public void onClick(View v) {
 				//TODO: setup intent to Launch dialog fragment for review/add to have eaten list
-				
+				showDialog();
 			}
 		});
+	}
+	public void showDialog(){
+		MenuItemOnClickDialog dialog = new MenuItemOnClickDialog();
+		dialog.show(activity.getFragmentManager(), "Dialog");
 	}
 	
 	@Override

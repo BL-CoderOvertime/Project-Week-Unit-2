@@ -27,7 +27,7 @@ public class MenuItemListActivity extends AppCompatActivity {
 		Bundle data = this.getIntent().getBundleExtra("bundle_key");
 		 ArrayList<MenuItem> menuItems = data.getParcelableArrayList("restaurant_key");
 		
-		listAdapter = new MenuItemListAdapter(menuItems);
+		listAdapter = new MenuItemListAdapter(menuItems, this);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		
 		recyclerView.setAdapter(listAdapter);
