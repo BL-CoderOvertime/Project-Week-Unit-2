@@ -28,14 +28,23 @@ public class RestaurantListActivity extends AppCompatActivity {
 		recyclerView = findViewById(R.id.restaurant_list_recycler_view);
 		restaurants = new ArrayList<>();
 		
-		//int id, LatLng location, String name, ArrayList<MenuItem> menu, URI imageUri
-		restaurants.add(new Restaurant(1,null, "Restaurant 1", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(2,null, "Restaurant 2", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(3,null, "Restaurant 3", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(4,null, "Restaurant 4", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(5,null, "Restaurant 5", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(6,null, "Restaurant 6", new ArrayList<MenuItem>(), null));
-		restaurants.add(new Restaurant(7,null, "Restaurant 7", new ArrayList<MenuItem>(), null));
+		ArrayList<MenuItem> menuItems = new ArrayList<>();
+		menuItems.add(new MenuItem(1,1,"Potato Soup 1", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 2", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 3", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 4", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 5", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 6", 4, 5));
+		menuItems.add(new MenuItem(1,1,"Potato Soup 7", 4, 5));
+		
+		
+		restaurants.add(new Restaurant(1,null, "Restaurant 1", menuItems, null));
+		restaurants.add(new Restaurant(2,null, "Restaurant 2", menuItems, null));
+		restaurants.add(new Restaurant(3,null, "Restaurant 3", menuItems, null));
+		restaurants.add(new Restaurant(4,null, "Restaurant 4", menuItems, null));
+		restaurants.add(new Restaurant(5,null, "Restaurant 5", menuItems, null));
+		restaurants.add(new Restaurant(6,null, "Restaurant 6", menuItems, null));
+		restaurants.add(new Restaurant(7,null, "Restaurant 7", menuItems, null));
 		listAdapter = new RestaurantListAdapter(restaurants);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".RestaurantListActivity">
 
-    <include layout="@layout/menu_drawer_layout" />
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurant_list_recycler_view"
@@ -16,4 +16,5 @@
         android:layout_height="wrap_content"
         tools:listitem="@layout/restaurant_list_content"/>
 
+    <include layout="@layout/menu_drawer_layout" />
 </android.support.constraint.ConstraintLayout>
