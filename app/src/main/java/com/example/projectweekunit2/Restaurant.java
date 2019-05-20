@@ -4,10 +4,11 @@ import android.graphics.Bitmap;
 
 import com.google.android.gms.maps.model.LatLng;
 
+import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 
-public class Restaurant {
+public class Restaurant implements Serializable {
 	private int id;
 	private LatLng location;
 	private String name;
