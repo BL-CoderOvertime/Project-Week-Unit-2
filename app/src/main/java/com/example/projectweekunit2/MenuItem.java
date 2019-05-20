@@ -1,18 +1,16 @@
 package com.example.projectweekunit2;
 
 public class MenuItem {
-	private final int id, price, resturantId;
+	private final int id, price, resturantId, rating;
 	private final String name;
 	
-	public MenuItem(int id, int resturantId, String name) {
-		this(id,resturantId,name,0);
-	}
 	
-	public MenuItem(int id, int resturantId, String name, int price) {
+	public MenuItem(int id, int resturantId, String name, int price, int rating) {
 		this.id = id;
 		this.resturantId = resturantId;
 		this.name = name;
 		this.price = price;
+		this.rating = rating;
 	}
 	
 	public int getId() {
@@ -29,5 +27,9 @@ public class MenuItem {
 	
 	public String getName() {
 		return name;
+	}
+	
+	public int getRating() {
+		return rating;
 	}
 }
