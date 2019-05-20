@@ -17,7 +17,6 @@
             android:layout_height="match_parent"
             android:layout_marginStart="95dp"
             android:gravity="center"
-            android:marginEnd="75dp"
             android:text="Zomato Soup Emporium"
             android:textColor="#000"
             android:textSize="24dp" />
@@ -39,7 +38,6 @@
             android:textSize="20dp"
             android:text="150ft"
             android:layout_marginEnd="15dp"
-            android:layout_paddingStart="15dp"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 

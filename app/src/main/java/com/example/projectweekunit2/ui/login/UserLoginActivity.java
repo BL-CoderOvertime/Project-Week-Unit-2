@@ -22,7 +22,7 @@ import com.example.projectweekunit2.R;
 import com.example.projectweekunit2.ui.login.LoginViewModel;
 import com.example.projectweekunit2.ui.login.LoginViewModelFactory;
 
-public class LoginActivity extends AppCompatActivity {
+public class UserLoginActivity extends AppCompatActivity {
 	
 	private LoginViewModel loginViewModel;
 	
