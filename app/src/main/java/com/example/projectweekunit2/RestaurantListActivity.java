@@ -1,8 +1,14 @@
 package com.example.projectweekunit2;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +20,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.util.ArrayList;
 
 public class RestaurantListActivity extends AppCompatActivity {
@@ -22,44 +35,67 @@ public class RestaurantListActivity extends AppCompatActivity {
 	RecyclerView recyclerView;
 	
 	//TODO: move this to Dao
-	ArrayList<Restaurant> restaurants;
-	
+	final ArrayList<Restaurant> restaurants = new ArrayList();
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restaurant_list);
 		
-		initTempData();
+		Constants.setSharedPrefs(this);
+		
+		
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSIONS_REQUEST_LOCATION);
+		} else {
+			getLocation();
+		}
+		
+		//initTempData();
 		initRecyclerView();
 		initToolBar();
 		
-		
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						Thread.sleep(1000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					restaurants.addAll(ZomatoApiDao.getRestaurantList());
+					
+					runOnUiThread(new Runnable() {
+						@Override
+						public void run() {
+							listAdapter.notifyDataSetChanged();
+						}
+					});
+				}
+			}).start();
 	}
 	
-	public void initTempData(){
-		restaurants = new ArrayList<>();
-		
+	public void initTempData() {
 		ArrayList<MenuItem> menuItems = new ArrayList<>();
-		menuItems.add(new MenuItem(1,1,"Potato Soup 1", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 2", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 3", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 4", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 5", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 6", 4, 5));
-		menuItems.add(new MenuItem(1,1,"Potato Soup 7", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 1", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 2", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 3", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 4", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 5", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 6", 4, 5));
+		menuItems.add(new MenuItem(1, 1, "Potato Soup 7", 4, 5));
 		
 		
-		restaurants.add(new Restaurant(1,null, "Restaurant 1", menuItems, null));
-		restaurants.add(new Restaurant(2,null, "Restaurant 2", menuItems, null));
-		restaurants.add(new Restaurant(3,null, "Restaurant 3", menuItems, null));
-		restaurants.add(new Restaurant(4,null, "Restaurant 4", menuItems, null));
-		restaurants.add(new Restaurant(5,null, "Restaurant 5", menuItems, null));
-		restaurants.add(new Restaurant(6,null, "Restaurant 6", menuItems, null));
-		restaurants.add(new Restaurant(7,null, "Restaurant 7", menuItems, null));
+		restaurants.add(new Restaurant(1, "Restaurant 1", menuItems, null));
+		restaurants.add(new Restaurant(2, "Restaurant 2", menuItems, null));
+		restaurants.add(new Restaurant(3, "Restaurant 3", menuItems, null));
+		restaurants.add(new Restaurant(4, "Restaurant 4", menuItems, null));
+		restaurants.add(new Restaurant(5, "Restaurant 5", menuItems, null));
+		restaurants.add(new Restaurant(6, "Restaurant 6", menuItems, null));
+		restaurants.add(new Restaurant(7, "Restaurant 7", menuItems, null));
 	}
 	
-	public void initRecyclerView(){
+	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.restaurant_list_recycler_view);
 		
 		listAdapter = new RestaurantListAdapter(restaurants);
@@ -82,7 +118,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 	}
 	
 	public void toolbarLogic() {
-		NavigationView navigationView  = findViewById(R.id.nav_view);
+		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull android.view.MenuItem menuItem) {
@@ -100,4 +136,36 @@ public class RestaurantListActivity extends AppCompatActivity {
 			}
 		});
 	}
+	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode == Constants.PERMISSIONS_REQUEST_LOCATION) {
+			if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				getLocation();
+			} else {
+				//permission denied
+			}
+		}
+	}
+	
+	private void getLocation() {
+		//check again before using permission
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+				return;
+			}
+		}
+		
+		FusedLocationProviderClient locationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+		locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+			@Override
+			public void onSuccess(Location location) {
+				
+				final Location finalLocation = location;
+				Constants.setLatLon(location.getLatitude(), location.getLongitude());
+			}
+		});
+		
+	}
+	
 }
