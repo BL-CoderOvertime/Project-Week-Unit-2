@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.projectweekunit2">
+    package="com.wkdrabbit.projectweekunit2">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -13,13 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".UserHistoryActivity"
+            android:name="com.wkdrabbit.projectweekunit2.UserHistoryActivity"
             android:label="@string/title_activity_user_history"/>
-        <activity android:name=".MenuItemListActivity" />
+        <activity android:name="com.wkdrabbit.projectweekunit2.MenuItemListActivity" />
         <activity
-            android:name=".ui.login.UserLoginActivity"
+            android:name="com.wkdrabbit.projectweekunit2.ui.login.UserLoginActivity"
             android:label="@string/title_activity_user_login" />
-        <activity android:name=".RestaurantListActivity">
+        <activity android:name="com.wkdrabbit.projectweekunit2.RestaurantListActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
