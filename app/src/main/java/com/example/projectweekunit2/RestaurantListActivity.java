@@ -33,6 +33,8 @@ public class RestaurantListActivity extends AppCompatActivity {
 		initTempData();
 		initRecyclerView();
 		initToolBar();
+		
+		
 	}
 	
 	public void initTempData(){
