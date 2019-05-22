@@ -13,6 +13,7 @@ public class FirebaseDao {
 	private static String TAG = "FirebaseDao";
 	private static String BASE_URL = "https://foodmato-5bb8a.firebaseio.com/";
 	private static String USER_URL = "";
+	private static String MENU_URL = "";
 	private static String RESTAURANT_DATA_URL = BASE_URL + "restaurants/";
 	private static String URL_ENDING = ".json";
 	private static String URL_HISTORY_ENTRY = "";
@@ -27,6 +28,7 @@ public class FirebaseDao {
 	public static void setURLs() {
 		USER_URL = BASE_URL + UserUID;
 		URL_HISTORY_ENTRY = BASE_URL + UserUID;
+		MENU_URL = USER_URL + "/user_data/history";
 	}
 	
 	/*public ArrayList<UserHistoryItem> getUserHistory(){
@@ -38,11 +40,11 @@ public class FirebaseDao {
 	
 	
 	
-	public static void writeToFirebase(MenuItem menuItem){
-		writeToFirebase(menuItem.toJson());
+	public static void writeHistoryItemToFirebase(MenuItem menuItem){
+		writeHistoryItemToFirebase(menuItem.toJson());
 	}
 	
-	public static void writeToFirebase(JSONObject body){
+	public static void writeHistoryItemToFirebase(JSONObject body){
 		
 		final JSONObject finalBody = body;
 		new Thread(new Runnable() {
@@ -52,7 +54,7 @@ public class FirebaseDao {
 					String results = "";
 					String userToken = Constants.prefs.getString("user_token", "default");
 					if(userToken.equals("default")){
-						NetworkAdapter.httpRequest(USER_URL + URL_ENDING, "POST", finalBody, Constants.getHeaders(Constants.FIREBASE_WRITE));
+						NetworkAdapter.httpRequest(MENU_URL + URL_ENDING, "POST", finalBody, Constants.getHeaders(Constants.FIREBASE_WRITE));
 					} else{results = NetworkAdapter.httpRequest(USER_URL + userToken + URL_ENDING);
 						JSONObject jsonResult = new JSONObject(results);
 						userToken = jsonResult.getString("name");

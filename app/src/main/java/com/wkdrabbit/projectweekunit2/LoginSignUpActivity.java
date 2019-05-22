@@ -86,9 +86,9 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
 				
+				MenuItem menuItem = new MenuItem(235987, 352352, "little tonys",  "carbonara", 8.75, 4, "user review");
+				FirebaseDao.writeHistoryItemToFirebase(menuItem);
 				
-				//	FirebaseDao.writeToFirebase(menuItem);
-				// ...
 			} else {
 				// Sign in failed. If response is null the user canceled the
 				// sign-in flow using the back button. Otherwise check
