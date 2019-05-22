@@ -19,6 +19,11 @@ public class Constants {
 	public static final int ZOMATO = 3;
 	public static double LAT = 0;
 	public static double LON = 0;
+	public static final String[] MENU_RATING_ONE_STAR = {"horrible", "worst", "pathetic"};
+	public static final String[] MENU_RATING_TWO_STAR = {"bad", "not good"};
+	public static final String[] MENU_RATING_THREE_STAR = {"mediocre", "boring"};
+	public static final String[] MENU_RATING_FOUR_STAR = {"good", "tasty"};
+	public static final String[] MENU_RATING_FIVE_STAR = {"amazing", "fantastic", "mind blowing", "awesome", "spectacular", "delicious", "great"};
 	
 	
 	

@@ -66,27 +66,22 @@ public class MenuItem  implements Parcelable {
 	}
 	
 	public JSONObject toJson() {
-		JSONObject jsonUserData = new JSONObject();
-		JSONArray jsonArrHistory = new JSONArray();
 		JSONObject jsonData = new JSONObject();
-		JSONObject jsonBase = new JSONObject();
 		
 		try {
 			jsonData.put("id", id)
 					.put("name", name)
+					.put("restaurant_name", restaurantName)
 					.put("restaurant_id", resturantId)
 					.put("rating", rating)
-					.put("timestamp", String.valueOf(System.currentTimeMillis()))
-					.put("review", review);
+					.put("review", review)
+					.put("timestamp", String.valueOf(System.currentTimeMillis()));
 			
-			jsonArrHistory.put(jsonData);
-			jsonUserData.put("history", jsonArrHistory);
-			jsonBase.put("user_data", jsonUserData);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		
-		return jsonBase;
+		return jsonData;
 	}
 		
 		

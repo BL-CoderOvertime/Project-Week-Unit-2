@@ -84,9 +84,13 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
 				
-				MenuItem menuItem = new MenuItem(4, 53, "Testing Restaurant Name", "Menu Item Name Here", 5.35, 4, "THIS WAS GOOD AF");
+				Review review = new Review("The soup at the test restaurant was, i've never had such an dish in my life, however the service was bad, horrible, and good", 4);
+				int rating = review.getRatingFromReview();
+				MenuItem menuItem = new MenuItem(4, 53, "Testing Restaurant Name", "soup", 5.35, 4, "THIS WAS GOOD AF");
 				
-					FirebaseDao.writeToFirebase(menuItem);
+				boolean containsWord = review.containsMenuItem(menuItem);
+				
+				//	FirebaseDao.writeToFirebase(menuItem);
 				// ...
 			} else {
 				// Sign in failed. If response is null the user canceled the
