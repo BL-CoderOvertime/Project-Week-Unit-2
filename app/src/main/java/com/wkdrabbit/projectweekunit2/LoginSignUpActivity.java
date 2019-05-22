@@ -1,8 +1,12 @@
 package com.wkdrabbit.projectweekunit2;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,7 +31,10 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -74,7 +81,7 @@ public class LoginSignUpActivity extends AppCompatActivity {
 	}
 	
 	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	protected void onActivityResult(final int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 		
 		if (requestCode == RC_SIGN_IN) {
@@ -92,7 +99,39 @@ public class LoginSignUpActivity extends AppCompatActivity {
 						//int id, int resturantId, String restaurantName,  String name, double price, int rating, String review
 						//FirebaseDao.createEntry(new MenuItem("-LGEBAU3NEG",4,"test name", "test name menu", 3.64, 4, "MY REVIEW"));
 						
-						ArrayList<UserHistoryItem> userHistoryItems = FirebaseDao.getUserHistory();
+						
+						
+						Restaurant restaurant = ZomatoApiDao.getRestaurantList().get(1);
+						ArrayList<MenuItem> menuItems = new ArrayList<>();
+						
+						//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup", 8.75, 3, ""));
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup1", 8.75, 3, ""));
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup2", 8.75, 3, ""));
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup3", 8.75, 3, ""));
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup4", 8.75, 3, ""));
+						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup5", 8.75, 3, ""));
+						
+						restaurant.addToMenu(menuItems);
+						final Restaurant finalRestaurant = restaurant;
+						
+						new Thread(new Runnable() {
+							@Override
+							public void run() {
+								FirebaseDao.createRestaurantMenu(finalRestaurant);
+								
+							}
+						}).start();
+						
+				
+						
+						
+						
+						//ArrayList<UserHistoryItem> userHistoryItems = FirebaseDao.getUserHistory();
+						
+						//for(int i = 0; i < userHistoryItems.size(); ++i){
+						//	FirebaseDao.updateEntry(userHistoryItems.get(i));
+						//}
 						
 						Log.i("test","test");
 					}
@@ -108,5 +147,36 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				// ...
 			}
 		}
+	}
+	
+	@Override
+	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+		if (requestCode == Constants.PERMISSIONS_REQUEST_LOCATION) {
+			if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+				getLocation();
+			} else {
+				//permission denied
+			}
+		}
+	}
+	
+	private void getLocation() {
+		//check again before using permission
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+				return;
+			}
+		}
+		
+		FusedLocationProviderClient locationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
+		locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+			@Override
+			public void onSuccess(Location location) {
+				
+				final Location finalLocation = location;
+				Constants.setLatLon(location.getLatitude(), location.getLongitude());
+			}
+		});
+		
 	}
 }

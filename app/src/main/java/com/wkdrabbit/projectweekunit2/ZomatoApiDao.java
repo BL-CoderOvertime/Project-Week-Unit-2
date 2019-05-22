@@ -14,7 +14,7 @@ public class ZomatoApiDao {
 	
 	public static ArrayList<Restaurant> getRestaurantList() {
 		ArrayList<Restaurant> restaurantResults = new ArrayList<>();
-		String URL = BASE_URL + "search?count=20&lat=" + Constants.LAT + "&lon" + Constants.LON + "&radius=500&sort=real_distance&order=asc";
+		String URL = BASE_URL + "search?count=20&lat=" + Constants.LAT + "&lon=" + Constants.LON + "&radius=500&sort=real_distance&order=asc";
 		
 		final String result = NetworkAdapter.httpRequest(URL, "GET", Constants.getHeaders(Constants.ZOMATO));
 		try {

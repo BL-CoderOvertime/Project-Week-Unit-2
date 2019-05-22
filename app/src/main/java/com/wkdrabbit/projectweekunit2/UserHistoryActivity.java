@@ -24,11 +24,16 @@ public class UserHistoryActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_user_history);
 		
 		
-		//initMockData();
+		initData();
 		initRecyclerView();
 		initToolBar();
 		
 	}
+	
+	public void initData(){
+		userHistoryItems = FirebaseDao.getUserHistory();
+	}
+	
 	
 /*	public void initMockData() {
 		userHistoryItems = new ArrayList<>();

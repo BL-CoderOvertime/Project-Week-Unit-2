@@ -1,12 +1,15 @@
 package com.wkdrabbit.projectweekunit2;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.concurrent.TimeUnit;
 
 public class UserHistoryItem {
 	
 	private long timeLastEaten;
 	private String id, restaurantName, menuItemName, review;
-	private int rating, restaurantID;
+	private int rating, restaurantId;
 	
 	public UserHistoryItem(long timeLastEaten, String restaurantName, String menuItemName, int rating, String id, int restaurantId , String review) {
 		this.timeLastEaten = timeLastEaten;
@@ -15,7 +18,7 @@ public class UserHistoryItem {
 		this.rating = rating;
 		this.review = review;
 		this.id = id;
-		this.restaurantID = restaurantId;
+		this.restaurantId = restaurantId;
 	}
 	
 	public long getTimeLastEaten() {
@@ -42,8 +45,27 @@ public class UserHistoryItem {
 		return id;
 	}
 	
+	public JSONObject toJson(){
+		JSONObject jsonData = new JSONObject();
+		
+		try {
+			jsonData.put("id", id)
+					.put("name", menuItemName)
+					.put("restaurant_name", restaurantName)
+					.put("restaurant_id", restaurantId)
+					.put("rating", rating)
+					.put("review", review)
+					.put("timestamp", timeLastEaten);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+		return jsonData;
+	}
+	
 	public int getRestaurantID() {
-		return restaurantID;
+		return restaurantId;
 	}
 }
 
