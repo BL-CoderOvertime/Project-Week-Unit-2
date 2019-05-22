@@ -38,6 +38,8 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -84,11 +86,6 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
 				
-				Review review = new Review("The soup at the test restaurant was, i've never had such an dish in my life, however the service was bad, horrible, and good", 4);
-				int rating = review.getRatingFromReview();
-				MenuItem menuItem = new MenuItem(4, 53, "Testing Restaurant Name", "soup", 5.35, 4, "THIS WAS GOOD AF");
-				
-				boolean containsWord = review.containsMenuItem(menuItem);
 				
 				//	FirebaseDao.writeToFirebase(menuItem);
 				// ...
