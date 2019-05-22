@@ -97,6 +97,7 @@ public class Restaurant implements Parcelable {
 		try {
 			jsonBase.put("name", name);
 			jsonBase.put("id", id);
+			jsonBase.put("fb_id", fbId);
 			jsonBase.put("image_uri", imageUri);
 			jsonBase.put("menu", menuArr);
 			

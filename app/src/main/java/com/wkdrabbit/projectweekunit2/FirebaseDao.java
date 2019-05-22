@@ -53,6 +53,7 @@ public class FirebaseDao {
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
+				updateRestaurant(restaurant);
 			}
 		}).start();
 	}
@@ -154,6 +155,22 @@ public class FirebaseDao {
 						String.format(UPDATE_ENTRY, userHistoryItem.getId()),
 						NetworkAdapter.PUT,
 						userHistoryItem.toJson(),
+						Constants.getHeaders(Constants.FIREBASE_WRITE));
+				
+			}
+		}).start();
+	}
+	
+	
+	public static void updateRestaurant(final Restaurant restaurant) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				
+				NetworkAdapter.httpRequest(
+						String.format(RESTAURANT_UPDATE_DATA_URL, restaurant.getFbId()),
+						NetworkAdapter.PUT,
+						restaurant.toJson(),
 						Constants.getHeaders(Constants.FIREBASE_WRITE));
 				
 			}
