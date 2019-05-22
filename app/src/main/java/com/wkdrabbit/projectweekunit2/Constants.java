@@ -14,6 +14,9 @@ public class Constants {
 	public static SharedPreferences prefs;
 	public static SharedPreferences.Editor editor;
 	public static final int PERMISSIONS_REQUEST_LOCATION = 3;
+	public static final int FIREBASE_WRITE = 1;
+	public static final int FIREBASE_READ = 2;
+	public static final int ZOMATO = 3;
 	public static double LAT = 0;
 	public static double LON = 0;
 	
@@ -35,10 +38,19 @@ public class Constants {
 	}
 	
 	//TODO: pull out userKey before implementing other DAOS
-	public static Map<String, String> getHeaders() {
+	public static Map<String, String> getHeaders(int type) {
 		Map<String, String> params = new HashMap<>();
-		//params.put("user-key", "d2f58e6f0bdd23c307abbdcb31605ffd");
-		params.put("Content-Type", "application/json");
+		switch(type){
+			case FIREBASE_WRITE:
+				params.put("Content-Type", "application/json");
+				break;
+			case FIREBASE_READ:
+				break;
+			case ZOMATO:
+				params.put("Content-Type", "application/json");
+				params.put("user-key", "d2f58e6f0bdd23c307abbdcb31605ffd");
+				break;
+		}
 		return params;
 	}
 }

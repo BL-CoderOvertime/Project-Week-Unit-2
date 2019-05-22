@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 
 public class FirebaseDao {
 	private static String UserUID = "";
@@ -18,24 +20,45 @@ public class FirebaseDao {
 		UserUID = userUID;
 		setUserUrl();
 		
+	
+	}
+	
+	public static void setUserUrl() {
+		//USER_URL = BASE_URL + UserUID;
+	}
+	
+	/*public ArrayList<UserHistoryItem> getUserHistory(){
+		String results = NetworkAdapter.httpRequest(USER_URL + URL_ENDING, "GET");
+		USER_TOKEN = new JSONObject(results).getString("id");
+	}*/
+	
+	
+	public static void writeToFirebase(MenuItem menuItem){
+		writeToFirebase(menuItem.toJson());
+	}
+	
+	public static void writeToFirebase(JSONObject body){
+		
+		final JSONObject finalBody = body;
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				try {
-					JSONObject body = new JSONObject("{\"user_data\": {\"id\":\"UserIdHere\",\"name\":\"UserNameHere\",\"history\": [ {\"id\": \"1\",\"name\": \"Tom\",\"restaurant_id\": \"restid\",\"restaurant_name\": \"Cruise\",\"timestamp\": \"63463464\",\"rating\": \"4\"},{\"id\": \"2\",\"name\": \"Tom1\",\"restaurant_id\": \"restid\",\"restaurant_name\": \"Cruise1\",\"timestamp\": \"63463464\",\"rating\": \"4\"},{\"id\": \"3\",\"name\": \"Tom2\",\"restaurant_id\": \"restid\",\"restaurant_name\": \"Cruise2\",\"timestamp\": \"63463464\",\"rating\": \"4\"}]}}");
-					
-					String result = NetworkAdapter.httpRequest(USER_URL + URL_ENDING, "POST", body, Constants.getHeaders());
-					JSONObject jsonResult = new JSONObject(result);
-					String userToken = jsonResult.getString("name");
-				
+					String results = "";
+					String userToken = Constants.prefs.getString("user_token", "default");
+					if(userToken.equals("default")){
+						NetworkAdapter.httpRequest(USER_URL + URL_ENDING, "POST", finalBody, Constants.getHeaders(Constants.FIREBASE_WRITE));
+					} else{results = NetworkAdapter.httpRequest(USER_URL + userToken + URL_ENDING);
+						JSONObject jsonResult = new JSONObject(results);
+						userToken = jsonResult.getString("name");
+						Constants.editor.putString("user_token", userToken);
+						Constants.editor.commit();
+					}
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
 			}
 		}).start();
-	}
-	
-	public static void setUserUrl() {
-		USER_URL = BASE_URL + UserUID;
+		
 	}
 }

@@ -35,6 +35,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -53,6 +56,8 @@ public class LoginSignUpActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_login_sign_up);
 		context = this;
 		button = findViewById(R.id.btn_google_sign_in);
+		
+		Constants.setSharedPrefs(this);
 		
 		List<AuthUI.IdpConfig> providers = Arrays.asList(
 				new AuthUI.IdpConfig.EmailBuilder().build());
@@ -78,6 +83,10 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
+				
+				MenuItem menuItem = new MenuItem(4, 53, "Testing Restaurant Name", "Menu Item Name Here", 5.35, 4, "THIS WAS GOOD AF");
+				
+					FirebaseDao.writeToFirebase(menuItem);
 				// ...
 			} else {
 				// Sign in failed. If response is null the user canceled the

@@ -70,7 +70,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 			}).start();
 	}
 	
-	public void initTempData() {
+	/*public void initTempData() {
 		ArrayList<MenuItem> menuItems = new ArrayList<>();
 		menuItems.add(new MenuItem(1, 1, "Potato Soup 1", 4, 5));
 		menuItems.add(new MenuItem(1, 1, "Potato Soup 2", 4, 5));
@@ -89,7 +89,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 		restaurants.add(new Restaurant(6, "Restaurant 6", menuItems, null));
 		restaurants.add(new Restaurant(7, "Restaurant 7", menuItems, null));
 	}
-	
+	*/
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.restaurant_list_recycler_view);
 		
