@@ -11,6 +11,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.api.Auth;
@@ -49,7 +53,6 @@ public class LoginSignUpActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_login_sign_up);
 		context = this;
 		button = findViewById(R.id.btn_google_sign_in);
-		
 		
 		List<AuthUI.IdpConfig> providers = Arrays.asList(
 				new AuthUI.IdpConfig.EmailBuilder().build());

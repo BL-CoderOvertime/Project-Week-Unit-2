@@ -37,7 +37,7 @@ public class Constants {
 	//TODO: pull out userKey before implementing other DAOS
 	public static Map<String, String> getHeaders() {
 		Map<String, String> params = new HashMap<>();
-		params.put("user-key", "d2f58e6f0bdd23c307abbdcb31605ffd");
+		//params.put("user-key", "d2f58e6f0bdd23c307abbdcb31605ffd");
 		params.put("Content-Type", "application/json");
 		return params;
 	}
