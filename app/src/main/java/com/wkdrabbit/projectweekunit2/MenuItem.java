@@ -8,12 +8,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class MenuItem  implements Parcelable {
-	private final int id, resturantId, rating;
-	private final double price;
-	private final String name, review, restaurantName;
+	private  int resturantId, rating;
+	private  double price;
+	private  String name, review, restaurantName, id;
 	
 	
-	public MenuItem(int id, int resturantId, String restaurantName,  String name, double price, int rating, String review){
+	public MenuItem(String id, int resturantId, String restaurantName,  String name, double price, int rating, String review){
 		this.id = id;
 		this.resturantId = resturantId;
 		this.restaurantName = restaurantName;
@@ -24,7 +24,7 @@ public class MenuItem  implements Parcelable {
 	}
 	
 	protected MenuItem(Parcel in) {
-		id = in.readInt();
+		id = in.readString();
 		price = in.readDouble();
 		resturantId = in.readInt();
 		rating = in.readInt();
@@ -45,7 +45,7 @@ public class MenuItem  implements Parcelable {
 		}
 	};
 	
-	public int getId() {
+	public String getId() {
 		return id;
 	}
 	
@@ -63,6 +63,10 @@ public class MenuItem  implements Parcelable {
 	
 	public int getRating() {
 		return rating;
+	}
+	
+	public void setId(String id){
+		this.id = id;
 	}
 	
 	public JSONObject toJson() {
@@ -102,7 +106,7 @@ public class MenuItem  implements Parcelable {
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
 		
-		dest.writeInt(id);
+		dest.writeString(id);
 		dest.writeDouble(price);
 		dest.writeInt(resturantId);
 		dest.writeInt(rating);
@@ -110,4 +114,6 @@ public class MenuItem  implements Parcelable {
 		dest.writeString(restaurantName);
 		dest.writeString(review);
 	}
+	
+
 }

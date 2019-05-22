@@ -24,13 +24,13 @@ public class UserHistoryActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_user_history);
 		
 		
-		initMockData();
+		//initMockData();
 		initRecyclerView();
 		initToolBar();
 		
 	}
 	
-	public void initMockData() {
+/*	public void initMockData() {
 		userHistoryItems = new ArrayList<>();
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993569365, "Restaurant Name 1", "Zomato Soup", 4));
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993509365, "Restaurant Name 1", "Zomato Soup", 4));
@@ -39,7 +39,7 @@ public class UserHistoryActivity extends AppCompatActivity {
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 996209365, "Restaurant Name 1", "Zomato Soup", 4));
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 93562365, "Restaurant Name 1", "Zomato Soup", 4));
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993562365, "Restaurant Name 1", "Zomato Soup", 4));
-	}
+	}*/
 	
 	public void initToolBar() {
 		Toolbar toolbar = findViewById(R.id.toolbar);

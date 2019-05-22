@@ -85,9 +85,21 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						
+						//int id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+						//FirebaseDao.createEntry(new MenuItem("-LGEBAU3NEG",4,"test name", "test name menu", 3.64, 4, "MY REVIEW"));
+						
+						ArrayList<UserHistoryItem> userHistoryItems = FirebaseDao.getUserHistory();
+						
+						Log.i("test","test");
+					}
+				}).start();
 				
-				MenuItem menuItem = new MenuItem(235987, 352352, "little tonys",  "carbonara", 8.75, 4, "user review");
-				FirebaseDao.writeHistoryItemToFirebase(menuItem);
+				
+			
 				
 			} else {
 				// Sign in failed. If response is null the user canceled the
