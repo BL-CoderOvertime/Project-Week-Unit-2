@@ -79,6 +79,7 @@ public class MenuItem  implements Parcelable {
 					.put("restaurant_id", resturantId)
 					.put("rating", rating)
 					.put("review", review)
+					.put("price", price)
 					.put("timestamp", String.valueOf(System.currentTimeMillis()));
 			
 		} catch (JSONException e) {

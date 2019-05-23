@@ -27,7 +27,6 @@ public class Review {
 		int[] ratingArr = new int[5];
 		int value = 0;
 		int totalWords = 0;
-		int rating = 0;
 		
 		for(int i = 0; i < 5; i++){
 			switch (i){

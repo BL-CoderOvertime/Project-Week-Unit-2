@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -19,15 +21,20 @@ public class MenuItemListActivity extends AppCompatActivity {
 	
 	MenuItemListAdapter listAdapter;
 	RecyclerView recyclerView;
+	Button btnAddMenuItem;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu_item_list);
 		
+		btnAddMenuItem = findViewById(R.id.btn_add_menu_item);
+		
 		initSharedPrefs();
 		initRecyclerView();
 		initToolBar();
+		
+
 	}
 	
 	public void initSharedPrefs(){
@@ -39,8 +46,19 @@ public class MenuItemListActivity extends AppCompatActivity {
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.menu_item_recycler_view);
 		
-		Bundle data = this.getIntent().getBundleExtra("bundle_key");
+		final Bundle data = this.getIntent().getBundleExtra("bundle_key");
 		ArrayList<MenuItem> menuItems = data.getParcelableArrayList("restaurant_key");
+		
+		
+		btnAddMenuItem.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Restaurant restaurant = data.getParcelable("full_restaurant_key");
+				//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+				restaurant.addToMenu(new MenuItem("3253252", restaurant.getId(), restaurant.getName(), "test menu name", 8.75, 4, "review here"));
+			}
+		});
+		
 		
 		listAdapter = new MenuItemListAdapter(menuItems, this);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);

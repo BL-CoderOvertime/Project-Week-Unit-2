@@ -26,16 +26,16 @@ public class Restaurant implements Parcelable {
 		this.imageUri = imageUri;
 	}
 	
-	public Restaurant( int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
-		this("default", id,name,menu,imageUri);
+	public Restaurant(int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
+		this("default", id, name, menu, imageUri);
 	}
 	
-	public Restaurant( int id, String name, ArrayList<MenuItem> menu) {
-		this("default", id,name,menu,null);
+	public Restaurant(int id, String name, ArrayList<MenuItem> menu) {
+		this("default", id, name, menu, null);
 	}
 	
-	public Restaurant(int id, String name){
-		this(id,name, new ArrayList<MenuItem>(), null);
+	public Restaurant(int id, String name) {
+		this(id, name, new ArrayList<MenuItem>(), null);
 	}
 	
 	public void setFbId(String fbId) {
@@ -87,10 +87,10 @@ public class Restaurant implements Parcelable {
 		return image;
 	}
 	
-	public JSONObject toJson(){
+	public JSONObject toJson() {
 		JSONArray menuArr = new JSONArray();
 		
-		for(int i = 0; i < menu.size(); ++i){
+		for (int i = 0; i < menu.size(); ++i) {
 			menuArr.put(menu.get(i).toJson());
 		}
 		JSONObject jsonBase = new JSONObject();
@@ -113,8 +113,8 @@ public class Restaurant implements Parcelable {
 		return 0;
 	}
 	
-	public void setMenuFromFB(){
-		menu = FirebaseDao.getRestaurantMenu(this);
+	public void setMenuFromFB() {
+		//menu = FirebaseDao.getRestaurantMenu(this);
 	}
 	
 	@Override
@@ -126,7 +126,24 @@ public class Restaurant implements Parcelable {
 		dest.writeParcelable(image, flags);
 	}
 	
-	public void addToMenu(ArrayList<MenuItem> menuItems) {
-	menu.addAll(menuItems);
+	public void addToMenu(MenuItem menuItem){
+		
+		if(menu == null){
+			menu = new ArrayList<>();
+		}
+		
+		menu.add(menuItem);
+		final Restaurant finRestaurant = this;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				FirebaseDao.updateRestaurant(finRestaurant);
+			}
+		}).start();
+	}
+	
+	public void setMenu(ArrayList<MenuItem> menuItems) {
+		menu.clear();
+		menu.addAll(menuItems);
 	}
 }

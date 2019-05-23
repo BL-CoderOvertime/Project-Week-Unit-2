@@ -40,7 +40,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 	}
 	
 	@Override
-	public void onBindViewHolder(@NonNull RestaurantListAdapter.ViewHolder viewHolder, int i) {
+	public void onBindViewHolder(@NonNull RestaurantListAdapter.ViewHolder viewHolder, final int i) {
 		final Restaurant data = restaurants.get(i);
 		//TODO: setup method for calculating the distance to restaurant
 		//viewHolder.tvDistanceTo.setText(data.getDistanceTo());
@@ -48,12 +48,20 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 		//viewHolder.ivRestaurantLogo.setImageBitmap(data.getImage());
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
-			public void onClick(View v) {
-				Intent intent = new Intent(v.getContext(), MenuItemListActivity.class);
-				Bundle bundle = new Bundle();
-				bundle.putParcelableArrayList("restaurant_key", data.getMenu());
-				intent.putExtra("bundle_key",bundle);
-				v.getContext().startActivity(intent);
+			public void onClick(final View v) {
+				new Thread(new Runnable() {
+					@Override
+					public void run() {
+						restaurants.set(i,FirebaseDao.pullRestaurantFromFireBase(restaurants.get(i)));
+						Intent intent = new Intent(v.getContext(), MenuItemListActivity.class);
+						Bundle bundle = new Bundle();
+						bundle.putParcelable("full_restaurant_key", data);
+						bundle.putParcelableArrayList("restaurant_key", data.getMenu());
+						intent.putExtra("bundle_key",bundle);
+						v.getContext().startActivity(intent);
+					}
+				}).start();
+
 			}
 		});
 		

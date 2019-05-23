@@ -1,7 +1,6 @@
 package com.wkdrabbit.projectweekunit2;
 
-import com.firebase.client.Firebase;
-
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,6 +21,7 @@ public class FirebaseDao {
 	private static String URL_HISTORY_ENTRY = "/user_data/history/";
 	private static String UPDATE_ENTRY = "";
 	private static String CREATE_URL = "";
+	private static final String RESTAURANT_GET_ALL_URL = RESTAURANT_CREATE_DATA_URL;
 	
 	//TODO: Create FirebaseData base and add data that way instead of network adapter. allows for setting custom IDs for objects.
 	
@@ -177,7 +177,148 @@ public class FirebaseDao {
 		}).start();
 	}
 	
-	public static ArrayList<MenuItem> getRestaurantMenu(Restaurant restaurant) {
-		return null;
+	public static Restaurant pullRestaurantFromFireBase(Restaurant restaurant) {
+		
+		//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+		
+		boolean hasBeenFound = false;
+		String FbId = "";
+		String name = "";
+		int id = 0;
+		int restaurantId = 0;
+		int rating = 0;
+		
+		try {
+			String results = "";
+			results = NetworkAdapter.httpRequest(RESTAURANT_GET_ALL_URL, "GET", Constants.getHeaders(Constants.FIREBASE_READ));
+			
+			
+			JSONObject topJson = new JSONObject(results);
+			for (Iterator<String> it = topJson.keys(); it.hasNext(); ) {
+				String key = it.next();
+				try {
+					final JSONObject jsonObject = topJson.getJSONObject(key);
+					FbId = key;
+					
+					try {
+						id = jsonObject.getInt("id");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					if(id == restaurant.getId()){
+						
+						hasBeenFound = true;
+						ArrayList<MenuItem> menuToAdd = new ArrayList<>();
+						restaurant.setFbId(key);
+						JSONArray menu = jsonObject.getJSONArray("menu");
+						
+						for(int i = 0; i < menu.length(); ++i){
+							
+							String menuId = "";
+							String menuName = "";
+							double price = 0;
+							int menuRating = 0;
+							int menuRestaurantId = 0;
+							String menuRestaurantName = "";
+							
+							JSONObject menuItem = menu.getJSONObject(i);
+							
+							try {
+								menuId = menuItem.getString("id");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								menuName = menuItem.getString("name");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								price = menuItem.getDouble("price");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								menuRating = menuItem.getInt("rating");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								menuRestaurantId = menuItem.getInt("restaurant_id");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								menuRestaurantName = menuItem.getString("restaurant_name");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							
+							menuToAdd.add(new MenuItem(menuId, menuRestaurantId , menuRestaurantName, menuName, price, menuRating, ""));
+						}
+						restaurant.setMenu(menuToAdd);
+						
+						return restaurant;
+					}
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			if(!hasBeenFound){
+			createRestaurantMenu(restaurant);}
+				/*try {
+					final JSONObject jsonObject = topJson.getJSONObject(i);
+					try {
+						id = jsonObject.getString("id");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					try {
+						price = Double.parseDouble(jsonObject.getString("price"));
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch (NullPointerException e) {
+						e.printStackTrace();
+					}
+					try {
+						name = jsonObject.getString("name");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					try {
+						rating = jsonObject.getInt("rating");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					try {
+						review = jsonObject.getString("review");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					try {
+						restaurantId = jsonObject.getInt("restaurant_id");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					try {
+						restaurantName = jsonObject.getString("restaurant_name");
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					
+					menuItems.add(new MenuItem(id, restaurantId, restaurantName, name, price, rating, review));
+					
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}*/
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return restaurant;
 	}
 }

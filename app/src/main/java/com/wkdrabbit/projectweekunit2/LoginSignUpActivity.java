@@ -92,52 +92,39 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
+				
+				/*new Thread(new Runnable() {
+					@Override
+					public void run() {
+						Restaurant restaurant = ZomatoApiDao.getRestaurantList().get(2);
+						ArrayList<MenuItem> menu = new ArrayList<>();
+						
+	*//*					menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
+						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
+						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
+						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
+						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
+						
+						
+						restaurant.setMenu(menu);*//*
+	
+					//	FirebaseDao.createRestaurantMenu(restaurant);
+						
+					//	menu = FirebaseDao.getRestaurantMenu(restaurant);
+						
+					}
+				}).start();*/
+				
+				
 				new Thread(new Runnable() {
 					@Override
 					public void run() {
-						
-						//int id, int resturantId, String restaurantName,  String name, double price, int rating, String review
-						//FirebaseDao.createEntry(new MenuItem("-LGEBAU3NEG",4,"test name", "test name menu", 3.64, 4, "MY REVIEW"));
-						
-						
-						
-						Restaurant restaurant = ZomatoApiDao.getRestaurantList().get(1);
-						ArrayList<MenuItem> menuItems = new ArrayList<>();
-						
-						//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup", 8.75, 3, ""));
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup1", 8.75, 3, ""));
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup2", 8.75, 3, ""));
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup3", 8.75, 3, ""));
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup4", 8.75, 3, ""));
-						menuItems.add(new MenuItem("Legfhq35", restaurant.getId() , restaurant.getName(), "Potato Soup5", 8.75, 3, ""));
-						
-						restaurant.addToMenu(menuItems);
-						final Restaurant finalRestaurant = restaurant;
-						
-						new Thread(new Runnable() {
-							@Override
-							public void run() {
-								FirebaseDao.createRestaurantMenu(finalRestaurant);
-								
-							}
-						}).start();
-						
-				
-						
-						
-						
-						//ArrayList<UserHistoryItem> userHistoryItems = FirebaseDao.getUserHistory();
-						
-						//for(int i = 0; i < userHistoryItems.size(); ++i){
-						//	FirebaseDao.updateEntry(userHistoryItems.get(i));
-						//}
-						
-						Log.i("test","test");
+						FirebaseDao.createRestaurantMenu(ZomatoApiDao.getRestaurantList().get(2));
 					}
 				}).start();
 				
-				
+				Intent intent = new Intent(this, RestaurantListActivity.class);
+				startActivity(intent);
 			
 				
 			} else {

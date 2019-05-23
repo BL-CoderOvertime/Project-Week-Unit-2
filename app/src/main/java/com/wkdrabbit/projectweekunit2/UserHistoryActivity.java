@@ -23,19 +23,40 @@ public class UserHistoryActivity extends AppCompatActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_user_history);
 		
-		
 		initData();
-		initRecyclerView();
+		//initRecyclerView();
 		initToolBar();
 		
 	}
 	
 	public void initData(){
-		userHistoryItems = FirebaseDao.getUserHistory();
+		
+		userHistoryItems = new ArrayList<>();
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				userHistoryItems = FirebaseDao.getUserHistory();
+				
+				
+				
+				runOnUiThread(new Runnable() {
+					@Override
+					public void run() {
+						initRecyclerView();
+						listAdapter.notifyDataSetChanged();
+					}
+				});
+			}
+		}).start();
+		
 	}
 	
+	@Override
+	protected void onStart() {
+		super.onStart();
+	}
 	
-/*	public void initMockData() {
+	/*	public void initMockData() {
 		userHistoryItems = new ArrayList<>();
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993569365, "Restaurant Name 1", "Zomato Soup", 4));
 		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993509365, "Restaurant Name 1", "Zomato Soup", 4));

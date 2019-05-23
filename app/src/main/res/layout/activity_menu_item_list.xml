@@ -51,6 +51,12 @@
             tools:listitem="@layout/menu_list_content" />
     </android.support.v4.widget.DrawerLayout>
 
-
+<Button
+    android:id="@+id/btn_add_menu_item"
+    android:layout_width="match_parent"
+    android:text="Add Menu Item"
+    android:layout_height="70dp"
+    android:layout_margin="15dp"
+    app:layout_constraintBottom_toBottomOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
