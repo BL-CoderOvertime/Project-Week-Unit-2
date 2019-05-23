@@ -1,5 +1,6 @@
 package com.wkdrabbit.projectweekunit2;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -15,56 +16,60 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.wkdrabbit.projectweekunit2.util.MenuItemListAdapter;
+
 import java.util.ArrayList;
 
-public class MenuItemListActivity extends AppCompatActivity {
+public class MenuItemListActivity extends AppCompatActivity implements AddMenuItemOnClickDialog.OnCompleteListener {
 	
 	MenuItemListAdapter listAdapter;
 	RecyclerView recyclerView;
 	Button btnAddMenuItem;
+	ArrayList<MenuItem> menuItems;
+	Restaurant restaurant;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_menu_item_list);
-		
+		menuItems = new ArrayList<>();
+		restaurant = null;
 		btnAddMenuItem = findViewById(R.id.btn_add_menu_item);
 		
 		initSharedPrefs();
 		initRecyclerView();
 		initToolBar();
-		
-
 	}
 	
-	public void initSharedPrefs(){
+	public void initSharedPrefs() {
 		final SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-		final SharedPreferences.Editor editor     = sharedPreferences.edit();
+		final SharedPreferences.Editor editor = sharedPreferences.edit();
 		
 	}
 	
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.menu_item_recycler_view);
-		
-		final Bundle data = this.getIntent().getBundleExtra("bundle_key");
-		ArrayList<MenuItem> menuItems = data.getParcelableArrayList("restaurant_key");
-		
-		
-		btnAddMenuItem.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Restaurant restaurant = data.getParcelable("full_restaurant_key");
-				//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
-				restaurant.addToMenu(new MenuItem("3253252", restaurant.getId(), restaurant.getName(), "test menu name", 8.75, 4, "review here"));
-			}
-		});
-		
-		
 		listAdapter = new MenuItemListAdapter(menuItems, this);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		
 		recyclerView.setAdapter(listAdapter);
 		recyclerView.setLayoutManager(layoutManager);
+		
+		listAdapter.updateData(menuItems);
+		
+		
+		final Bundle data = this.getIntent().getBundleExtra("bundle_key");
+		menuItems = data.getParcelableArrayList("restaurant_key");
+		restaurant = data.getParcelable("full_restaurant_key");
+		restaurant.setMenu(menuItems);
+		listAdapter.updateData(menuItems);
+		
+		btnAddMenuItem.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				showAddMenuItemDialog();
+			}
+		});
 	}
 	
 	public void initToolBar() {
@@ -80,7 +85,7 @@ public class MenuItemListActivity extends AppCompatActivity {
 	}
 	
 	public void toolbarLogic() {
-		NavigationView navigationView  = findViewById(R.id.nav_view);
+		NavigationView navigationView = findViewById(R.id.nav_view);
 		navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
 			@Override
 			public boolean onNavigationItemSelected(@NonNull android.view.MenuItem menuItem) {
@@ -97,5 +102,19 @@ public class MenuItemListActivity extends AppCompatActivity {
 				return true;
 			}
 		});
+	}
+	
+	public void showAddMenuItemDialog() {
+		AddMenuItemOnClickDialog dialog = new AddMenuItemOnClickDialog();
+		dialog.show(this.getFragmentManager(), "Dialog");
+	}
+	
+	@Override
+	public void onComplete(String menuItemName) {
+		MenuItem addMenuItem = new MenuItem("",restaurant.getId(),restaurant.getName(),menuItemName,0,0,"");
+		//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+		menuItems.add(addMenuItem);
+		restaurant.addToMenu(addMenuItem);
+		listAdapter.updateData(menuItems);
 	}
 }

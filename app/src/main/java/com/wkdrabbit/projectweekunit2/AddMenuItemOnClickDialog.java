@@ -1,17 +1,25 @@
 package com.wkdrabbit.projectweekunit2;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class AddMenuItemOnClickDialog extends DialogFragment {
 	
-	private TextView tvMenuItemName;
+	private EditText etMenuItemName;
+	private EditText etMenuItemPrice;
+	private Button  btnNext;
+	private boolean hasBeenClicked = false;
+	private OnCompleteListener mListener;
 	
 	
 	@Override
@@ -19,24 +27,43 @@ public class AddMenuItemOnClickDialog extends DialogFragment {
 		AlertDialog.Builder  builder = new AlertDialog.Builder(getActivity());
 		
 		LayoutInflater inflater = getActivity().getLayoutInflater();
-		View view = inflater.inflate(R.layout.layout_dialog_fragment, null);
+		View view = inflater.inflate(R.layout.layout_add_menuitem_dialog_fragment, null);
+		etMenuItemName = view.findViewById(R.id.et_menu_item_name);
+		
 		
 		builder.setView(view)
-				.setTitle("Menu Title Here")
+				.setTitle("Add Menu Item")
 				.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 					
 					}
-				})
-				.setPositiveButton("ok", new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						//TODO: setup on confirm
-					}
-				});
-		tvMenuItemName = view.findViewById(R.id.tv_menu_item_name);
+				}).setPositiveButton("Add", new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				mListener.onComplete(etMenuItemName.getText().toString());
+			}
+		});
+		
+	
+		
 		return builder.create();
 	}
 	
+	public static interface OnCompleteListener {
+		public abstract void onComplete(String time);
+	}
+	
+	
+	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+		try {
+			this.mListener = (OnCompleteListener)activity;
+		} catch (final ClassCastException e) {
+			throw new ClassCastException(activity.toString() + " must Implement OnCompleteListener");
+		}
+	}
 }

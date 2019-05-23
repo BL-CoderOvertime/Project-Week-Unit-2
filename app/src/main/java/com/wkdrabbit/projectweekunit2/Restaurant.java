@@ -15,7 +15,7 @@ import java.util.List;
 public class Restaurant implements Parcelable {
 	private int id;
 	private String name, fbId;
-	private ArrayList<MenuItem> menu;
+	private ArrayList<MenuItem> menu = new ArrayList<>();
 	private URI imageUri;
 	private Bitmap image;
 	
@@ -24,6 +24,8 @@ public class Restaurant implements Parcelable {
 		this.name = name;
 		this.menu = menu;
 		this.imageUri = imageUri;
+		
+		menu = new ArrayList<>();
 	}
 	
 	public Restaurant(int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
@@ -124,13 +126,10 @@ public class Restaurant implements Parcelable {
 		dest.writeString(name);
 		//dest.writeList(menu);
 		dest.writeParcelable(image, flags);
+		
 	}
 	
 	public void addToMenu(MenuItem menuItem){
-		
-		if(menu == null){
-			menu = new ArrayList<>();
-		}
 		
 		menu.add(menuItem);
 		final Restaurant finRestaurant = this;

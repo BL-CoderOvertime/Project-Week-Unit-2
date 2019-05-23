@@ -1,7 +1,8 @@
-package com.wkdrabbit.projectweekunit2;
+package com.wkdrabbit.projectweekunit2.util;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,15 +10,38 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.wkdrabbit.projectweekunit2.MenuItem;
+import com.wkdrabbit.projectweekunit2.MenuItemOnClickDialog;
+import com.wkdrabbit.projectweekunit2.R;
+
 import java.util.ArrayList;
 
 public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapter.ViewHolder> {
+	
 	ArrayList<MenuItem> menuItems;
 	Activity activity;
 	
 	public MenuItemListAdapter(ArrayList<MenuItem> menuItems, Activity activity) {
 		this.menuItems = menuItems;
 		this.activity = activity;
+	}
+	
+	
+	public void insertData(ArrayList<MenuItem> insertList){
+		DiffUtilCallback diffUtilCallback = new DiffUtilCallback(menuItems, insertList);
+		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+		
+		menuItems.addAll(insertList);
+		diffResult.dispatchUpdatesTo(this);
+	}
+	
+	public void updateData(ArrayList<MenuItem> newList){
+		DiffUtilCallback diffUtilCallback = new DiffUtilCallback(menuItems, newList);
+		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+		
+		menuItems.clear();
+		menuItems.addAll(newList);
+		diffResult.dispatchUpdatesTo(this);
 	}
 	
 	class ViewHolder extends RecyclerView.ViewHolder{

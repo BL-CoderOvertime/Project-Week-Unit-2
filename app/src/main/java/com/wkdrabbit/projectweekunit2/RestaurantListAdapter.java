@@ -55,7 +55,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 						restaurants.set(i,FirebaseDao.pullRestaurantFromFireBase(restaurants.get(i)));
 						Intent intent = new Intent(v.getContext(), MenuItemListActivity.class);
 						Bundle bundle = new Bundle();
-						bundle.putParcelable("full_restaurant_key", data);
+						bundle.putParcelable("full_restaurant_key", restaurants.get(i));
 						bundle.putParcelableArrayList("restaurant_key", data.getMenu());
 						intent.putExtra("bundle_key",bundle);
 						v.getContext().startActivity(intent);
