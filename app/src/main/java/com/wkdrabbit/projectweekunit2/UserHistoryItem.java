@@ -9,7 +9,8 @@ public class UserHistoryItem {
 	
 	private long timeLastEaten;
 	private String id, restaurantName, menuItemName, review;
-	private int rating, restaurantId;
+	private int restaurantId;
+	double  rating;
 	
 	public UserHistoryItem(long timeLastEaten, String restaurantName, String menuItemName, int rating, String id, int restaurantId , String review) {
 		this.timeLastEaten = timeLastEaten;
@@ -33,7 +34,7 @@ public class UserHistoryItem {
 		return menuItemName;
 	}
 	
-	public int getRating() {
+	public double getRating() {
 		return rating;
 	}
 	
@@ -66,6 +67,14 @@ public class UserHistoryItem {
 	
 	public int getRestaurantID() {
 		return restaurantId;
+	}
+	
+	public void setReview(String reviewText) {
+	this.review = reviewText;
+	}
+	
+	public void setRating(double rating) {
+	this.rating = rating;
 	}
 }
 

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
     tools:context=".UserHistoryActivity">
 
     <android.support.v4.widget.DrawerLayout
@@ -29,6 +30,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 android:background="?attr/colorPrimary">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:textColor="#fff"
+                    android:textSize="25dp"
+                    android:gravity="center"
+                    android:text="Meals You've Eaten"/>
             </android.support.v7.widget.Toolbar>
 
         </LinearLayout>

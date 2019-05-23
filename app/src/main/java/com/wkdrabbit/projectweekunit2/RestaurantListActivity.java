@@ -36,17 +36,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_restaurant_list);
-		
-		Constants.setSharedPrefs(this);
-		
-		
-		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSIONS_REQUEST_LOCATION);
-		} else {
-			getLocation();
-		}
-		
-		//initTempData();
+
 		initRecyclerView();
 		initToolBar();
 		
@@ -69,27 +59,7 @@ public class RestaurantListActivity extends AppCompatActivity {
 				}
 			}).start();
 	}
-	
-	/*public void initTempData() {
-		ArrayList<MenuItem> menuItems = new ArrayList<>();
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 1", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 2", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 3", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 4", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 5", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 6", 4, 5));
-		menuItems.add(new MenuItem(1, 1, "Potato Soup 7", 4, 5));
-		
-		
-		restaurants.add(new Restaurant(1, "Restaurant 1", menuItems, null));
-		restaurants.add(new Restaurant(2, "Restaurant 2", menuItems, null));
-		restaurants.add(new Restaurant(3, "Restaurant 3", menuItems, null));
-		restaurants.add(new Restaurant(4, "Restaurant 4", menuItems, null));
-		restaurants.add(new Restaurant(5, "Restaurant 5", menuItems, null));
-		restaurants.add(new Restaurant(6, "Restaurant 6", menuItems, null));
-		restaurants.add(new Restaurant(7, "Restaurant 7", menuItems, null));
-	}
-	*/
+
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.restaurant_list_recycler_view);
 		
@@ -131,36 +101,5 @@ public class RestaurantListActivity extends AppCompatActivity {
 			}
 		});
 	}
-	
-	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-		if (requestCode == Constants.PERMISSIONS_REQUEST_LOCATION) {
-			if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION) && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-				getLocation();
-			} else {
-				//permission denied
-			}
-		}
-	}
-	
-	private void getLocation() {
-		//check again before using permission
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-			if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-				return;
-			}
-		}
-		
-		FusedLocationProviderClient locationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
-		locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-			@Override
-			public void onSuccess(Location location) {
-				
-				final Location finalLocation = location;
-				Constants.setLatLon(location.getLatitude(), location.getLongitude());
-			}
-		});
 		
 	}
-	
-}

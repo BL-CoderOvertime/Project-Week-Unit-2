@@ -167,6 +167,23 @@ public class FirebaseDao {
 			@Override
 			public void run() {
 				
+				ArrayList<Review> reviews = ZomatoApiDao.getReviews(restaurant);
+				
+				for(int i = 0; i < reviews.size(); i++){
+					for(int j = 0; j < restaurant.getMenu().size(); j++){
+						if(reviews.get(i).containsMenuItem(restaurant.getMenu().get(j))){
+							double adjustedRating = 0.0;
+							adjustedRating = reviews.get(i).getRatingFromReview()/restaurant.getMenu().get(j).getTotalRatings();
+							if(restaurant.getMenu().get(j).getRating() > reviews.get(i).getRatingFromReview()){
+								restaurant.getMenu().get(j).setRating(restaurant.getMenu().get(j).getRating()-adjustedRating);
+							}else {
+								restaurant.getMenu().get(j).setRating(restaurant.getMenu().get(j).getRating()+adjustedRating);
+							}
+						}
+					}
+				}
+				
+				
 				NetworkAdapter.httpRequest(
 						String.format(RESTAURANT_UPDATE_DATA_URL, restaurant.getFbId()),
 						NetworkAdapter.PUT,
@@ -186,7 +203,6 @@ public class FirebaseDao {
 		String name = "";
 		int id = 0;
 		int restaurantId = 0;
-		int rating = 0;
 		
 		try {
 			String results = "";
@@ -212,13 +228,15 @@ public class FirebaseDao {
 						ArrayList<MenuItem> menuToAdd = new ArrayList<>();
 						restaurant.setFbId(key);
 						JSONArray menu = jsonObject.getJSONArray("menu");
+				
 						
 						for(int i = 0; i < menu.length(); ++i){
 							
 							String menuId = "";
 							String menuName = "";
 							double price = 0;
-							int menuRating = 0;
+							double menuRating = 0;
+							int totalRatings = 0;
 							int menuRestaurantId = 0;
 							String menuRestaurantName = "";
 							
@@ -240,7 +258,12 @@ public class FirebaseDao {
 								e.printStackTrace();
 							}
 							try {
-								menuRating = menuItem.getInt("rating");
+								menuRating = menuItem.getDouble("rating");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							try {
+								totalRatings = menuItem.getInt("total_ratings");
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
@@ -255,7 +278,7 @@ public class FirebaseDao {
 								e.printStackTrace();
 							}
 							
-							menuToAdd.add(new MenuItem(menuId, menuRestaurantId , menuRestaurantName, menuName, price, menuRating, ""));
+							menuToAdd.add(new MenuItem(menuId, menuRestaurantId , menuRestaurantName, menuName, price, menuRating, "", totalRatings));
 						}
 						restaurant.setMenu(menuToAdd);
 						
@@ -263,59 +286,12 @@ public class FirebaseDao {
 					}
 					
 				} catch (JSONException e) {
-					e.printStackTrace();
+					restaurant.setFbId(FbId);
+					return restaurant;
 				}
 			}
 			if(!hasBeenFound){
 			createRestaurantMenu(restaurant);}
-				/*try {
-					final JSONObject jsonObject = topJson.getJSONObject(i);
-					try {
-						id = jsonObject.getString("id");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					try {
-						price = Double.parseDouble(jsonObject.getString("price"));
-					} catch (JSONException e) {
-						e.printStackTrace();
-					} catch (NullPointerException e) {
-						e.printStackTrace();
-					}
-					try {
-						name = jsonObject.getString("name");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					try {
-						rating = jsonObject.getInt("rating");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					try {
-						review = jsonObject.getString("review");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					try {
-						restaurantId = jsonObject.getInt("restaurant_id");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					
-					try {
-						restaurantName = jsonObject.getString("restaurant_name");
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					
-					menuItems.add(new MenuItem(id, restaurantId, restaurantName, name, price, rating, review));
-					
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

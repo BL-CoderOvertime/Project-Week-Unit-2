@@ -1,5 +1,6 @@
 package com.wkdrabbit.projectweekunit2;
 
+import android.app.FragmentManager;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,7 +11,7 @@ import android.support.v7.widget.Toolbar;
 
 import java.util.ArrayList;
 
-public class UserHistoryActivity extends AppCompatActivity {
+public class UserHistoryActivity extends AppCompatActivity implements UserHistoryOnClickDialog.OnCompleteListener {
 	
 	UserHistoryListAdapter listAdapter;
 	RecyclerView recyclerView;
@@ -24,7 +25,7 @@ public class UserHistoryActivity extends AppCompatActivity {
 		setContentView(R.layout.activity_user_history);
 		
 		initData();
-		//initRecyclerView();
+		initRecyclerView();
 		initToolBar();
 		
 	}
@@ -36,14 +37,11 @@ public class UserHistoryActivity extends AppCompatActivity {
 			@Override
 			public void run() {
 				userHistoryItems = FirebaseDao.getUserHistory();
-				
-				
-				
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
 						initRecyclerView();
-						listAdapter.notifyDataSetChanged();
+						listAdapter.updateData(userHistoryItems);
 					}
 				});
 			}
@@ -78,12 +76,20 @@ public class UserHistoryActivity extends AppCompatActivity {
 	
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.user_history_recycler_view);
+		FragmentManager fragmentManager = this.getFragmentManager();
 		
-		listAdapter = new UserHistoryListAdapter(userHistoryItems);
+		listAdapter = new UserHistoryListAdapter(userHistoryItems, fragmentManager);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		
 		recyclerView.setAdapter(listAdapter);
 		recyclerView.setLayoutManager(layoutManager);
 	}
 	
+	@Override
+	public void onComplete(String reviewText, double rating) {
+		userHistoryItems.get(Constants.LAST_USER_HISTORY_POS).setReview(reviewText);
+		userHistoryItems.get(Constants.LAST_USER_HISTORY_POS).setRating(rating);
+				FirebaseDao.updateEntry(userHistoryItems.get(Constants.LAST_USER_HISTORY_POS));
+		listAdapter.updateData(userHistoryItems);
+	}
 }

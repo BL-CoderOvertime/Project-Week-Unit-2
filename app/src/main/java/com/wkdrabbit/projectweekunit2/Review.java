@@ -7,7 +7,7 @@ public class Review {
 	
 	public Review(String review, int rating){
 		this.rating = rating;
-		this.review = review;
+		this.review = review.toLowerCase();
 	}
 	
 	public String getReview() {
@@ -22,7 +22,7 @@ public class Review {
 		return review.contains(menuItem.getName());
 	}
 	
-	public int getRatingFromReview(){
+	public double getRatingFromReview(){
 		String[] contextWords;
 		int[] ratingArr = new int[5];
 		int value = 0;

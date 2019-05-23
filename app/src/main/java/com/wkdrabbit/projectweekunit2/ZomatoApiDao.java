@@ -15,6 +15,14 @@ public class ZomatoApiDao {
 	
 	public static ArrayList<Restaurant> getRestaurantList() {
 		ArrayList<Restaurant> restaurantResults = new ArrayList<>();
+		
+		while(Constants.LAT == 0 && Constants.LON == 0){
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
 		String URL = BASE_URL + "search?count=20&lat=" + Constants.LAT + "&lon=" + Constants.LON + "&radius=500&sort=real_distance&order=asc";
 		
 		int id = 0;
@@ -49,8 +57,6 @@ public class ZomatoApiDao {
 	}
 	
 	public static ArrayList<Review> getReviews(Restaurant restaurant) {
-		
-		
 		ArrayList<Review> reviews = new ArrayList<>();
 		
 		String URL = String.format(REVIEW_URL, restaurant.getId());

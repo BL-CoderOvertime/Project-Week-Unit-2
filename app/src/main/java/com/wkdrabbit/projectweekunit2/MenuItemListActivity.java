@@ -12,18 +12,18 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MenuItemListActivity extends AppCompatActivity implements AddMenuItemOnClickDialog.OnCompleteListener, MenuItemOnClickDialog.OnCompleteAddHistoryListener{
+public class MenuItemListActivity extends AppCompatActivity implements MenuItemAddDialogFragment.OnCompleteListener, MenuItemOnClickDialog.OnCompleteAddHistoryListener{
 	
 	MenuItemListAdapter listAdapter;
 	RecyclerView recyclerView;
-	Button btnAddMenuItem;
+	ImageView btnAddMenuItem;
 	ArrayList<MenuItem> menuItems;
 	Restaurant restaurant;
 	
@@ -105,14 +105,13 @@ public class MenuItemListActivity extends AppCompatActivity implements AddMenuIt
 	}
 	
 	public void showAddMenuItemDialog() {
-		AddMenuItemOnClickDialog dialog = new AddMenuItemOnClickDialog();
+		MenuItemAddDialogFragment dialog = new MenuItemAddDialogFragment();
 		dialog.show(this.getFragmentManager(), "Dialog");
 	}
 	
 	@Override
 	public void onComplete(String menuItemName) {
-		MenuItem addMenuItem = new MenuItem("",restaurant.getId(),restaurant.getName(),menuItemName,0,0,"");
-		//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
+		MenuItem addMenuItem = new MenuItem("",restaurant.getId(),restaurant.getName(),menuItemName,0,0,"", 0);
 		menuItems.add(addMenuItem);
 		restaurant.addToMenu(addMenuItem);
 		listAdapter.updateData(menuItems);

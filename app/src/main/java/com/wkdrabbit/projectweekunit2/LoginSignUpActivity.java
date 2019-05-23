@@ -8,6 +8,8 @@ import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -61,10 +63,13 @@ public class LoginSignUpActivity extends AppCompatActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_login_sign_up);
 		context = this;
-		button = findViewById(R.id.btn_google_sign_in);
+		if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+			ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, Constants.PERMISSIONS_REQUEST_LOCATION);
+		} else {
+			getLocation();
+		}
 		
 		Constants.setSharedPrefs(this);
 		
@@ -92,37 +97,11 @@ public class LoginSignUpActivity extends AppCompatActivity {
 				FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 				userUID = user.getUid();
 				FirebaseDao.setUserUid(userUID);
-				
-				/*new Thread(new Runnable() {
-					@Override
-					public void run() {
-						Restaurant restaurant = ZomatoApiDao.getRestaurantList().get(2);
-						ArrayList<MenuItem> menu = new ArrayList<>();
-						
-	*//*					menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
-						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
-						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
-						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
-						menu.add(new MenuItem("FETAE34", restaurant.getId(), restaurant.getName(), "Potato Soup", 8.56,4, "MY REVIEW"));
-						
-						
-						restaurant.setMenu(menu);*//*
-	
-					//	FirebaseDao.createRestaurantMenu(restaurant);
-						
-					//	menu = FirebaseDao.getRestaurantMenu(restaurant);
-						
-					}
-				}).start();*/
-				
-				
-				new Thread(new Runnable() {
-					@Override
-					public void run() {
-						FirebaseDao.createRestaurantMenu(ZomatoApiDao.getRestaurantList().get(2));
-					}
-				}).start();
-				
+				try {
+					Thread.sleep(500);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 				Intent intent = new Intent(this, RestaurantListActivity.class);
 				startActivity(intent);
 			
@@ -159,8 +138,6 @@ public class LoginSignUpActivity extends AppCompatActivity {
 		locationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
 			@Override
 			public void onSuccess(Location location) {
-				
-				final Location finalLocation = location;
 				Constants.setLatLon(location.getLatitude(), location.getLongitude());
 			}
 		});

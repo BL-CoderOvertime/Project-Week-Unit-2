@@ -9,11 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.wkdrabbit.projectweekunit2.util.DiffUtilCallback;
+import com.wkdrabbit.projectweekunit2.util.DiffUtilCallbackMenuItem;
 
 import java.util.ArrayList;
 
@@ -32,16 +31,16 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 	
 	
 	public void insertData(ArrayList<MenuItem> insertList){
-		DiffUtilCallback diffUtilCallback = new DiffUtilCallback(menuItems, insertList);
-		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+		DiffUtilCallbackMenuItem diffUtilCallbackMenuItem = new DiffUtilCallbackMenuItem(menuItems, insertList);
+		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallbackMenuItem);
 		
 		menuItems.addAll(insertList);
 		diffResult.dispatchUpdatesTo(this);
 	}
 	
 	public void updateData(ArrayList<MenuItem> newList){
-		DiffUtilCallback diffUtilCallback = new DiffUtilCallback(menuItems, newList);
-		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
+		DiffUtilCallbackMenuItem diffUtilCallbackMenuItem = new DiffUtilCallbackMenuItem(menuItems, newList);
+		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallbackMenuItem);
 		
 		menuItems.clear();
 		menuItems.addAll(newList);
@@ -53,7 +52,7 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 		menuItems.get(lastPos).setReview(review);
 		menuItems.get(lastPos).setRating(rating);
 		
-		FirebaseDao.createEntry(menuItems.get(lastPos));
+		FirebaseDao.createEntry(menuItems.get(Constants.LAST_MENU_ITEM_POS));
 		
 		Intent favIntent = new Intent(activity.getApplicationContext(), UserHistoryActivity.class);
 		activity.getApplicationContext().startActivity(favIntent);
@@ -67,7 +66,7 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			tvMenuItemName = itemView.findViewById(R.id.menu_list_name);
-			tvPrice = itemView.findViewById(R.id.menu_list_price);
+			//tvPrice = itemView.findViewById(R.id.menu_list_price);
 			ratingBar = itemView.findViewById(R.id.menu_list_rating);
 			//TODO: get handle for imageView rating
 		}
@@ -82,18 +81,16 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 	}
 	
 	@Override
-	public void onBindViewHolder(@NonNull MenuItemListAdapter.ViewHolder viewHolder, final int i) {
-		lastPos = i;
-		final MenuItem data = menuItems.get(i);
-		//TODO: setup imageView for rating
-		viewHolder.tvPrice.setText(String.valueOf(data.getPrice()));
+	public void onBindViewHolder(@NonNull MenuItemListAdapter.ViewHolder viewHolder, int i) {
+		Constants.LAST_MENU_ITEM_POS = i;
+		
+		MenuItem data = menuItems.get(i);
+		//viewHolder.tvPrice.setText(String.valueOf(data.getPrice()));
 		viewHolder.tvMenuItemName.setText(data.getName());
-		viewHolder.ratingBar.setRating(data.getRating());
+		viewHolder.ratingBar.setRating(Math.round(data.getRating()));
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				//TODO: setup intent to Launch dialog fragment for review/add to have eaten list
-				Constants.LAST_MENU_ITEM_POS = i;
 				showDialog();
 			}
 		});

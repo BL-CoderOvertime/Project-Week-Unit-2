@@ -6,15 +6,16 @@ import com.wkdrabbit.projectweekunit2.MenuItem;
 
 import java.util.List;
 
-public class DiffUtilCallback extends DiffUtil.Callback {
+public class DiffUtilCallbackMenuItem extends DiffUtil.Callback {
 	
 	private List<MenuItem> oldList;
 	private List<MenuItem> newList;
 	
-	public DiffUtilCallback(List<MenuItem> oldList, List<MenuItem> newList) {
+	public DiffUtilCallbackMenuItem(List<MenuItem> oldList, List<MenuItem> newList) {
 		this.oldList = oldList;
 		this.newList = newList;
 	}
+	
 	
 	@Override
 	public int getOldListSize() {
