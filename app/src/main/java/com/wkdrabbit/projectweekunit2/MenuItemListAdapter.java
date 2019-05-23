@@ -1,6 +1,8 @@
-package com.wkdrabbit.projectweekunit2.util;
+package com.wkdrabbit.projectweekunit2;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -8,22 +10,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 
-import com.wkdrabbit.projectweekunit2.MenuItem;
-import com.wkdrabbit.projectweekunit2.MenuItemOnClickDialog;
-import com.wkdrabbit.projectweekunit2.R;
+import com.wkdrabbit.projectweekunit2.util.DiffUtilCallback;
 
 import java.util.ArrayList;
 
-public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapter.ViewHolder> {
+public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapter.ViewHolder> implements MenuItemOnClickDialog.OnCompleteAddHistoryListener {
 	
 	ArrayList<MenuItem> menuItems;
 	Activity activity;
+	FragmentManager fragmentManager;
+	int lastPos = 0;
 	
-	public MenuItemListAdapter(ArrayList<MenuItem> menuItems, Activity activity) {
+	public MenuItemListAdapter(ArrayList<MenuItem> menuItems, Activity activity, FragmentManager fragmentManager) {
 		this.menuItems = menuItems;
 		this.activity = activity;
+		this.fragmentManager = fragmentManager;
 	}
 	
 	
@@ -44,17 +48,30 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 		diffResult.dispatchUpdatesTo(this);
 	}
 	
-	class ViewHolder extends RecyclerView.ViewHolder{
+	@Override
+	public void onComplete(String review, int rating) {
+		menuItems.get(lastPos).setReview(review);
+		menuItems.get(lastPos).setRating(rating);
+		
+		FirebaseDao.createEntry(menuItems.get(lastPos));
+		
+		Intent favIntent = new Intent(activity.getApplicationContext(), UserHistoryActivity.class);
+		activity.getApplicationContext().startActivity(favIntent);
+	}
+	
+	class ViewHolder extends RecyclerView.ViewHolder {
 		
 		TextView tvMenuItemName, tvPrice;
-		ImageView ivRating;
+		RatingBar ratingBar;
 		
 		public ViewHolder(@NonNull View itemView) {
 			super(itemView);
 			tvMenuItemName = itemView.findViewById(R.id.menu_list_name);
 			tvPrice = itemView.findViewById(R.id.menu_list_price);
+			ratingBar = itemView.findViewById(R.id.menu_list_rating);
 			//TODO: get handle for imageView rating
 		}
+		
 	}
 	
 	@NonNull
@@ -65,22 +82,25 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 	}
 	
 	@Override
-	public void onBindViewHolder(@NonNull MenuItemListAdapter.ViewHolder viewHolder, int i) {
+	public void onBindViewHolder(@NonNull MenuItemListAdapter.ViewHolder viewHolder, final int i) {
+		lastPos = i;
 		final MenuItem data = menuItems.get(i);
 		//TODO: setup imageView for rating
 		viewHolder.tvPrice.setText(String.valueOf(data.getPrice()));
 		viewHolder.tvMenuItemName.setText(data.getName());
+		viewHolder.ratingBar.setRating(data.getRating());
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				//TODO: setup intent to Launch dialog fragment for review/add to have eaten list
+				Constants.LAST_MENU_ITEM_POS = i;
 				showDialog();
 			}
 		});
 	}
 	public void showDialog(){
 		MenuItemOnClickDialog dialog = new MenuItemOnClickDialog();
-		dialog.show(activity.getFragmentManager(), "Dialog");
+		dialog.show(fragmentManager, "Dialog");
 	}
 	
 	@Override

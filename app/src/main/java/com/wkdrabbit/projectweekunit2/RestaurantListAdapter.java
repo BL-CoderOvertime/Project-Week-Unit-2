@@ -46,6 +46,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 		//viewHolder.tvDistanceTo.setText(data.getDistanceTo());
 		viewHolder.tvRestaurantName.setText(data.getName());
 		//viewHolder.ivRestaurantLogo.setImageBitmap(data.getImage());
+		viewHolder.tvDistanceTo.setText(String.valueOf(Math.round(data.getDistanceTo())) + "m");
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(final View v) {

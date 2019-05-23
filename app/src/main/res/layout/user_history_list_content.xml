@@ -21,12 +21,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
+                android:paddingStart="10dp"
                 android:paddingBottom="10dp"
                 android:text="Zomato Soup"
                 android:textColor="#000"
                 android:textSize="18dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/user_review"
+                app:layout_constraintRight_toLeftOf="@id/user_history_rating_bar"
                 app:layout_constraintTop_toBottomOf="@id/user_history_restaurant_name" />
 
             <TextView
@@ -36,19 +37,19 @@
                 android:layout_margin="10dp"
                 android:gravity="center_horizontal"
                 android:text="Zomato Soup Emporium"
-                android:textColor="#000"
-                android:textSize="24dp"
+                android:textSize="12dp"
                 app:layout_constraintLeft_toLeftOf="parent"
-                app:layout_constraintRight_toLeftOf="@id/user_review"
+                app:layout_constraintRight_toLeftOf="@id/user_history_rating_bar"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/user_review"
+            <RatingBar
+                android:id="@+id/user_history_rating_bar"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:numStars="5"
+                android:rating="3.5"
+                style="?attr/ratingBarStyleSmall"
                 android:layout_marginRight="10dp"
-                android:text="⋆⋆⋆⋆⋆"
-                android:textSize="40dp"
                 app:layout_constraintBottom_toBottomOf="@+id/user_history_item_name"
                 app:layout_constraintRight_toLeftOf="@id/user_history_list_time"
                 app:layout_constraintTop_toTopOf="@+id/user_history_item_name" />

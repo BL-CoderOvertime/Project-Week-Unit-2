@@ -2,6 +2,7 @@ package com.wkdrabbit.projectweekunit2;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.RatingBar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -116,5 +117,12 @@ public class MenuItem  implements Parcelable {
 		dest.writeString(review);
 	}
 	
-
+	
+	public void setReview(String review) {
+		this.review = review;
+	}
+	
+	public void setRating(int rating){
+		this.rating = rating;
+	}
 }

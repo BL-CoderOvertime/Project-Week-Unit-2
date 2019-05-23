@@ -1,6 +1,6 @@
 package com.wkdrabbit.projectweekunit2;
 
-import android.app.Activity;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -12,15 +12,14 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.wkdrabbit.projectweekunit2.util.MenuItemListAdapter;
-
 import java.util.ArrayList;
 
-public class MenuItemListActivity extends AppCompatActivity implements AddMenuItemOnClickDialog.OnCompleteListener {
+public class MenuItemListActivity extends AppCompatActivity implements AddMenuItemOnClickDialog.OnCompleteListener, MenuItemOnClickDialog.OnCompleteAddHistoryListener{
 	
 	MenuItemListAdapter listAdapter;
 	RecyclerView recyclerView;
@@ -49,7 +48,8 @@ public class MenuItemListActivity extends AppCompatActivity implements AddMenuIt
 	
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.menu_item_recycler_view);
-		listAdapter = new MenuItemListAdapter(menuItems, this);
+		FragmentManager fragmentManager = this.getFragmentManager();
+		listAdapter = new MenuItemListAdapter(menuItems, this, fragmentManager);
 		LinearLayoutManager layoutManager = new LinearLayoutManager(this);
 		
 		recyclerView.setAdapter(listAdapter);
@@ -116,5 +116,17 @@ public class MenuItemListActivity extends AppCompatActivity implements AddMenuIt
 		menuItems.add(addMenuItem);
 		restaurant.addToMenu(addMenuItem);
 		listAdapter.updateData(menuItems);
+	}
+	
+	@Override
+	public void onComplete(String review, int rating) {
+		MenuItem newMenuItem = menuItems.get(Constants.LAST_MENU_ITEM_POS);
+		newMenuItem.setReview(review);
+		newMenuItem.setRating(rating);
+		
+		FirebaseDao.createEntry(newMenuItem);
+		
+		Intent userHistoryIntent = new Intent(this, UserHistoryActivity.class);
+		startActivity(userHistoryIntent);
 	}
 }

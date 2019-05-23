@@ -21,13 +21,15 @@
             android:textColor="#000"
             android:textSize="24dp" />
 
-        <TextView
+        <RatingBar
             android:id="@+id/menu_list_rating"
-            android:layout_width="157dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical|right"
-            android:gravity="center_vertical"
-            android:text="⋆⋆⋆⋆⋆"
+            style="?attr/ratingBarStyleSmall"
+            android:layout_marginRight="70dp"
+            android:layout_marginTop="5dp"
+            android:numStars="5"
             android:textSize="40dp" />
 
         <TextView

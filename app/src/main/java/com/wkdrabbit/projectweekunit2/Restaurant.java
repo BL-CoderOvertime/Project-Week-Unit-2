@@ -14,6 +14,7 @@ import java.util.List;
 
 public class Restaurant implements Parcelable {
 	private int id;
+	private float distanceTo = 0;
 	private String name, fbId;
 	private ArrayList<MenuItem> menu = new ArrayList<>();
 	private URI imageUri;
@@ -26,6 +27,11 @@ public class Restaurant implements Parcelable {
 		this.imageUri = imageUri;
 		
 		menu = new ArrayList<>();
+	}
+	
+	public Restaurant(int id, String name, float distanceTo){
+		this("default",id,name,new ArrayList<MenuItem>(), null);
+		this.distanceTo = distanceTo;
 	}
 	
 	public Restaurant(int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
@@ -72,6 +78,9 @@ public class Restaurant implements Parcelable {
 		return id;
 	}
 	
+	public float getDistanceTo() {
+		return distanceTo;
+	}
 	
 	public String getName() {
 		return name;

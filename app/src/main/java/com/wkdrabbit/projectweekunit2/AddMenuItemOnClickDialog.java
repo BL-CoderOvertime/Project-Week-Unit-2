@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,11 +17,7 @@ import android.widget.TextView;
 public class AddMenuItemOnClickDialog extends DialogFragment {
 	
 	private EditText etMenuItemName;
-	private EditText etMenuItemPrice;
-	private Button  btnNext;
-	private boolean hasBeenClicked = false;
 	private OnCompleteListener mListener;
-	
 	
 	@Override
 	public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -50,12 +47,10 @@ public class AddMenuItemOnClickDialog extends DialogFragment {
 		return builder.create();
 	}
 	
-	public static interface OnCompleteListener {
-		public abstract void onComplete(String time);
+	public interface OnCompleteListener {
+		void onComplete(String menuItemName);
 	}
-	
-	
-	
+
 	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
