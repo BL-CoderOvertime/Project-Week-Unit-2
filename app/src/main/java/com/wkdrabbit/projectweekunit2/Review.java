@@ -26,7 +26,7 @@ public class Review {
 		String[] contextWords;
 		int[] ratingArr = new int[5];
 		int value = 0;
-		int totalWords = 0;
+		int totalWords = 1;
 		
 		for(int i = 0; i < 5; i++){
 			switch (i){
@@ -58,11 +58,32 @@ public class Review {
 				if(review.contains(contextWords[j])){
 					totalWords++;
 					ratingArr[value-1]++;
+					
+					ratingArr[value-1]++;
 				}
 			}
 		}
 		
-		return ((ratingArr[0]) + (ratingArr[1] * 2) + (ratingArr[2] * 3) + (ratingArr[3] * 4) + (ratingArr[4] * 5))/totalWords;
+		double value1 = ratingArr[0];
+		double value2 = ratingArr[1] * 2;
+		double value3 = ratingArr[2] * 3;
+		double value4 = ratingArr[3] * 4;
+		double value5 = ratingArr[4] * 5;
+		
+		double totalValue =
+				value1 +
+				value2 +
+				value3 +
+				value4 +
+				value5;
+		
+		double result;
+		
+		if(totalValue > 0) {
+			 result = totalValue / totalWords;
+		} else {result = 0;}
+		
+		return result;
 		
 	}
 }

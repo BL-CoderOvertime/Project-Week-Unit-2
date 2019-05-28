@@ -76,5 +76,9 @@ public class UserHistoryItem {
 	public void setRating(double rating) {
 	this.rating = rating;
 	}
+	
+	public void setId(String id) {
+		this.id = id;
+	}
 }
 

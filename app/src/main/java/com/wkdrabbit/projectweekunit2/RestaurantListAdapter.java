@@ -42,8 +42,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 	@Override
 	public void onBindViewHolder(@NonNull RestaurantListAdapter.ViewHolder viewHolder, final int i) {
 		final Restaurant data = restaurants.get(i);
-		//TODO: setup method for calculating the distance to restaurant
-		//viewHolder.tvDistanceTo.setText(data.getDistanceTo());
+		
 		viewHolder.tvRestaurantName.setText(data.getName());
 		//viewHolder.ivRestaurantLogo.setImageBitmap(data.getImage());
 		viewHolder.tvDistanceTo.setText(String.valueOf(Math.round(data.getDistanceTo())) + "m");

@@ -29,12 +29,7 @@ public class MenuItemAddDialogFragment extends DialogFragment {
 		
 		
 		builder.setView(view)
-				.setTitle("Add Menu Item").setNeutralButton("Delete", new DialogInterface.OnClickListener() {
-			@Override
-			public void onClick(DialogInterface dialog, int which) {
-				mListener.onComplete("DeleteThisItem");
-			}
-		})
+				.setTitle("Add Menu Item")
 				.setNegativeButton("cancel", new DialogInterface.OnClickListener() {
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

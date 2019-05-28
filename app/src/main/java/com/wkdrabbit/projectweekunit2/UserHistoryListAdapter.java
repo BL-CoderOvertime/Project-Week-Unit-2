@@ -36,8 +36,7 @@ public class UserHistoryListAdapter extends RecyclerView.Adapter<UserHistoryList
 		ratingBar = itemView.findViewById(R.id.user_history_rating_bar);
 	}
 }
-	
-	
+
 	public void insertData(ArrayList<UserHistoryItem> insertList){
 		DiffUtilCallBackUserHistoryItem diffUtilCallBackUserHistoryItem = new DiffUtilCallBackUserHistoryItem(userHistoryItems, insertList);
 		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallBackUserHistoryItem);
@@ -49,12 +48,11 @@ public class UserHistoryListAdapter extends RecyclerView.Adapter<UserHistoryList
 	public void updateData(ArrayList<UserHistoryItem> newList){
 		DiffUtilCallBackUserHistoryItem diffUtilCallBackHistoryItem = new DiffUtilCallBackUserHistoryItem(userHistoryItems, newList);
 		DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallBackHistoryItem);
-		
-		//userHistoryItems.clear();
+
 		userHistoryItems = newList;
 		
 		this.notifyDataSetChanged();
-		//diffResult.dispatchUpdatesTo(this);
+		diffResult.dispatchUpdatesTo(this);
 	}
 	
 	@NonNull
@@ -67,16 +65,17 @@ public class UserHistoryListAdapter extends RecyclerView.Adapter<UserHistoryList
 	@Override
 	public void onBindViewHolder(@NonNull UserHistoryListAdapter.ViewHolder viewHolder, int i) {
 		final UserHistoryItem data = userHistoryItems.get(i);
-		Constants.LAST_USER_HISTORY_POS = i;
+		final int pos = i;
 		
-		viewHolder.ratingBar.setRating(Math.round(data.getRating()*2)/2);
+		viewHolder.ratingBar.setRating((float)data.getRating());
 		viewHolder.tvRestaurantName.setText(data.getRestaurantName());
 		viewHolder.tvMenuItemName.setText(data.getMenuItemName());
 		viewHolder.tvLastEaten.setText(String.valueOf(data.getTimeLastEaten()) + " Days");
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Constants.LAST_USER_HISTORY_ITEM = data;
+				Constants.atomicHistoryPos.set(pos);
+				Constants.LAST_USER_HISTORY_ITEM = userHistoryItems.get(pos);
 				showDialog();
 			}
 		});

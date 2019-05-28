@@ -53,18 +53,7 @@ public class UserHistoryActivity extends AppCompatActivity implements UserHistor
 	protected void onStart() {
 		super.onStart();
 	}
-	
-	/*	public void initMockData() {
-		userHistoryItems = new ArrayList<>();
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993569365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993509365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993509365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 996209365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 996209365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 93562365, "Restaurant Name 1", "Zomato Soup", 4));
-		userHistoryItems.add(new UserHistoryItem(System.currentTimeMillis() - 993562365, "Restaurant Name 1", "Zomato Soup", 4));
-	}*/
-	
+
 	public void initToolBar() {
 		Toolbar toolbar = findViewById(R.id.toolbar);
 		DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
@@ -87,9 +76,9 @@ public class UserHistoryActivity extends AppCompatActivity implements UserHistor
 	
 	@Override
 	public void onComplete(String reviewText, double rating) {
-		userHistoryItems.get(Constants.LAST_USER_HISTORY_POS).setReview(reviewText);
-		userHistoryItems.get(Constants.LAST_USER_HISTORY_POS).setRating(rating);
-				FirebaseDao.updateEntry(userHistoryItems.get(Constants.LAST_USER_HISTORY_POS));
+		userHistoryItems.get(Constants.atomicHistoryPos.get()).setReview(reviewText);
+		userHistoryItems.get(Constants.atomicHistoryPos.get()).setRating(rating);
+				FirebaseDao.updateEntry(userHistoryItems.get(Constants.atomicHistoryPos.get()));
 		listAdapter.updateData(userHistoryItems);
 	}
 }

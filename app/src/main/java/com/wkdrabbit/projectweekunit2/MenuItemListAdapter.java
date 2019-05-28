@@ -44,6 +44,7 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 		
 		menuItems.clear();
 		menuItems.addAll(newList);
+		//this.notifyDataSetChanged();
 		diffResult.dispatchUpdatesTo(this);
 	}
 	
@@ -52,7 +53,7 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 		menuItems.get(lastPos).setReview(review);
 		menuItems.get(lastPos).setRating(rating);
 		
-		FirebaseDao.createEntry(menuItems.get(Constants.LAST_MENU_ITEM_POS));
+		FirebaseDao.createEntry(menuItems.get(Constants.atomicMenuPos.get()));
 		
 		Intent favIntent = new Intent(activity.getApplicationContext(), UserHistoryActivity.class);
 		activity.getApplicationContext().startActivity(favIntent);
@@ -82,15 +83,16 @@ public class MenuItemListAdapter extends RecyclerView.Adapter<MenuItemListAdapte
 	
 	@Override
 	public void onBindViewHolder(@NonNull MenuItemListAdapter.ViewHolder viewHolder, int i) {
-		Constants.LAST_MENU_ITEM_POS = i;
 		
-		MenuItem data = menuItems.get(i);
-		//viewHolder.tvPrice.setText(String.valueOf(data.getPrice()));
+		
+		final MenuItem data = menuItems.get(i);
+		final int pos = i;
 		viewHolder.tvMenuItemName.setText(data.getName());
-		viewHolder.ratingBar.setRating(Math.round(data.getRating()));
+		viewHolder.ratingBar.setRating((float)data.getRating());
 		viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Constants.atomicMenuPos.set(pos);
 				showDialog();
 			}
 		});

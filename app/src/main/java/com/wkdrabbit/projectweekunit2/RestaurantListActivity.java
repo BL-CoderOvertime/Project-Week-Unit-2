@@ -59,7 +59,12 @@ public class RestaurantListActivity extends AppCompatActivity {
 				}
 			}).start();
 	}
-
+	
+	@Override
+	protected void onResume() {
+		super.onResume();
+	}
+	
 	public void initRecyclerView() {
 		recyclerView = findViewById(R.id.restaurant_list_recycler_view);
 		

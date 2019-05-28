@@ -1,5 +1,10 @@
 package com.wkdrabbit.projectweekunit2;
 
+import android.os.AsyncTask;
+import android.view.Menu;
+
+import com.google.gson.JsonObject;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,13 +28,10 @@ public class FirebaseDao {
 	private static String CREATE_URL = "";
 	private static final String RESTAURANT_GET_ALL_URL = RESTAURANT_CREATE_DATA_URL;
 	
-	//TODO: Create FirebaseData base and add data that way instead of network adapter. allows for setting custom IDs for objects.
 	
 	public static void setUserUid(String userUID) {
 		UserUID = userUID;
 		setURLs();
-		
-		
 	}
 	
 	public static void setURLs() {
@@ -39,7 +41,7 @@ public class FirebaseDao {
 		CREATE_URL = MENU_URL + URL_ENDING;
 	}
 	
-	public static void createRestaurantMenu(final Restaurant restaurant){
+	public static void createRestaurantMenu(final Restaurant restaurant) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -58,7 +60,6 @@ public class FirebaseDao {
 		}).start();
 	}
 	
-	
 	public static void createEntry(final MenuItem menuItem) {
 		new Thread(new Runnable() {
 			@Override
@@ -76,7 +77,6 @@ public class FirebaseDao {
 			}
 		}).start();
 	}
-	
 	
 	public static ArrayList<UserHistoryItem> getUserHistory() {
 		ArrayList<UserHistoryItem> userHistoryItems = new ArrayList<>();
@@ -145,58 +145,57 @@ public class FirebaseDao {
 		return userHistoryItems;
 	}
 	
+	public static double getUserRating(MenuItem menuItem){
+		double userRating = -1;
+		ArrayList<UserHistoryItem> userHistoryItems = getUserHistory();
+		for(int i = 0; i < userHistoryItems.size(); i++){
+			if(menuItem.getResturantId() == userHistoryItems.get(i).getRestaurantID() &&
+					menuItem.getName().toLowerCase().equals(userHistoryItems.get(i).getMenuItemName().toLowerCase())){
+				userRating = userHistoryItems.get(i).getRating();
+				return userRating;
+			}
+		}
+		return userRating;
+	}
 	
 	public static void updateEntry(final UserHistoryItem userHistoryItem) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
 				
-				NetworkAdapter.httpRequest(
+				String result = NetworkAdapter.httpRequest(
 						String.format(UPDATE_ENTRY, userHistoryItem.getId()),
 						NetworkAdapter.PUT,
 						userHistoryItem.toJson(),
 						Constants.getHeaders(Constants.FIREBASE_WRITE));
-				
+				try {
+					userHistoryItem.setId(new JSONObject(result).getString("name"));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
 			}
 		}).start();
 	}
-	
 	
 	public static void updateRestaurant(final Restaurant restaurant) {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				
-				ArrayList<Review> reviews = ZomatoApiDao.getReviews(restaurant);
-				
-				for(int i = 0; i < reviews.size(); i++){
-					for(int j = 0; j < restaurant.getMenu().size(); j++){
-						if(reviews.get(i).containsMenuItem(restaurant.getMenu().get(j))){
-							double adjustedRating = 0.0;
-							adjustedRating = reviews.get(i).getRatingFromReview()/restaurant.getMenu().get(j).getTotalRatings();
-							if(restaurant.getMenu().get(j).getRating() > reviews.get(i).getRatingFromReview()){
-								restaurant.getMenu().get(j).setRating(restaurant.getMenu().get(j).getRating()-adjustedRating);
-							}else {
-								restaurant.getMenu().get(j).setRating(restaurant.getMenu().get(j).getRating()+adjustedRating);
-							}
-						}
-					}
-				}
-				
-				
 				NetworkAdapter.httpRequest(
 						String.format(RESTAURANT_UPDATE_DATA_URL, restaurant.getFbId()),
 						NetworkAdapter.PUT,
 						restaurant.toJson(),
 						Constants.getHeaders(Constants.FIREBASE_WRITE));
-				
 			}
 		}).start();
 	}
 	
+	public static void parseReviews(Restaurant restaurant){
+		new parseReviewData().execute(restaurant);
+	}
+	
 	public static Restaurant pullRestaurantFromFireBase(Restaurant restaurant) {
 		
-		//String id, int resturantId, String restaurantName,  String name, double price, int rating, String review
 		
 		boolean hasBeenFound = false;
 		String FbId = "";
@@ -222,15 +221,15 @@ public class FirebaseDao {
 						e.printStackTrace();
 					}
 					
-					if(id == restaurant.getId()){
+					if (id == restaurant.getId()) {
 						
 						hasBeenFound = true;
 						ArrayList<MenuItem> menuToAdd = new ArrayList<>();
 						restaurant.setFbId(key);
 						JSONArray menu = jsonObject.getJSONArray("menu");
-				
 						
-						for(int i = 0; i < menu.length(); ++i){
+						
+						for (int i = 0; i < menu.length(); ++i) {
 							
 							String menuId = "";
 							String menuName = "";
@@ -278,7 +277,7 @@ public class FirebaseDao {
 								e.printStackTrace();
 							}
 							
-							menuToAdd.add(new MenuItem(menuId, menuRestaurantId , menuRestaurantName, menuName, price, menuRating, "", totalRatings));
+							menuToAdd.add(new MenuItem(menuId, menuRestaurantId, menuRestaurantName, menuName, price, menuRating, "", totalRatings));
 						}
 						restaurant.setMenu(menuToAdd);
 						
@@ -290,10 +289,55 @@ public class FirebaseDao {
 					return restaurant;
 				}
 			}
-			if(!hasBeenFound){
-			createRestaurantMenu(restaurant);}
+			if (!hasBeenFound) {
+				createRestaurantMenu(restaurant);
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		return restaurant;
+	}
+}
+
+class parseReviewData extends AsyncTask<Object,Integer,Object> {
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+	}
+	
+	@Override
+	protected void onPostExecute(Object o) {
+		FirebaseDao.updateRestaurant((Restaurant) o);
+		super.onPostExecute(o);
+	}
+	
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		super.onProgressUpdate(values);
+	}
+	
+	@Override
+	protected Object doInBackground(Object[] objects) {
+		Restaurant restaurant = (Restaurant)objects[0];
+		ArrayList<Review> reviews = ZomatoApiDao.getReviews(restaurant);
+		for (int i = 0; i < reviews.size(); i++) {
+				if (reviews.get(i).containsMenuItem(restaurant.getMenu().get(restaurant.getMenu().size()-1))) {
+					double reviewRating = reviews.get(i).getRatingFromReview();
+					double adjustedRating = 0;
+					double menuRating = restaurant.getMenu().get(restaurant.getMenu().size() -1).getRating();
+					int totalRatings = restaurant.getMenu().get(restaurant.getMenu().size() - 1).getTotalRatings();
+					
+					
+						adjustedRating = menuRating * totalRatings;
+						totalRatings++;
+					if (menuRating > reviewRating) {
+						restaurant.getMenu().get(restaurant.getMenu().size()-1).setRating(((adjustedRating - reviewRating)/totalRatings));
+					} else if(menuRating < reviewRating){
+						restaurant.getMenu().get(restaurant.getMenu().size()-1).setRating(((adjustedRating + reviewRating)/totalRatings));
+					}
+					
+					restaurant.getMenu().get(restaurant.getMenu().size()-1).setTotalRatings(totalRatings);
+				}
 		}
 		return restaurant;
 	}

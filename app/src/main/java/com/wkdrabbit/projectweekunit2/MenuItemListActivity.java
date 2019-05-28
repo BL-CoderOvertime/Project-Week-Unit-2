@@ -13,19 +13,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
-public class MenuItemListActivity extends AppCompatActivity implements MenuItemAddDialogFragment.OnCompleteListener, MenuItemOnClickDialog.OnCompleteAddHistoryListener{
+public class MenuItemListActivity extends AppCompatActivity implements
+		MenuItemAddDialogFragment.OnCompleteListener,
+		MenuItemOnClickDialog.OnCompleteAddHistoryListener {
 	
 	MenuItemListAdapter listAdapter;
 	RecyclerView recyclerView;
 	ImageView btnAddMenuItem;
 	ArrayList<MenuItem> menuItems;
 	Restaurant restaurant;
+	TextView tvPassData;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +37,38 @@ public class MenuItemListActivity extends AppCompatActivity implements MenuItemA
 		menuItems = new ArrayList<>();
 		restaurant = null;
 		btnAddMenuItem = findViewById(R.id.btn_add_menu_item);
+		tvPassData = findViewById(R.id.tv_pass_data);
 		
-		initSharedPrefs();
 		initRecyclerView();
 		initToolBar();
+		initAdapterList();
 	}
 	
-	public void initSharedPrefs() {
-		final SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
-		final SharedPreferences.Editor editor = sharedPreferences.edit();
+	
+	public void initAdapterList(){
+		final Bundle data = this.getIntent().getBundleExtra("bundle_key");
+		menuItems = data.getParcelableArrayList("restaurant_key");
+		restaurant = data.getParcelable("full_restaurant_key");
+		restaurant.setMenu(menuItems);
+		listAdapter.updateData(menuItems);
 		
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				for (int i = 0; i < menuItems.size(); i++) {
+					
+					double userRating = FirebaseDao.getUserRating(menuItems.get(i));
+					if (userRating != -1) {
+						menuItems.get(i).setRating(userRating);
+						listAdapter.updateData(menuItems);
+					}
+				}
+				
+				restaurant.setMenu(menuItems);
+				FirebaseDao.updateRestaurant(restaurant);
+				listAdapter.updateData(restaurant.getMenu());
+			}
+		}).start();
 	}
 	
 	public void initRecyclerView() {
@@ -58,11 +83,6 @@ public class MenuItemListActivity extends AppCompatActivity implements MenuItemA
 		listAdapter.updateData(menuItems);
 		
 		
-		final Bundle data = this.getIntent().getBundleExtra("bundle_key");
-		menuItems = data.getParcelableArrayList("restaurant_key");
-		restaurant = data.getParcelable("full_restaurant_key");
-		restaurant.setMenu(menuItems);
-		listAdapter.updateData(menuItems);
 		
 		btnAddMenuItem.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -111,20 +131,39 @@ public class MenuItemListActivity extends AppCompatActivity implements MenuItemA
 	
 	@Override
 	public void onComplete(String menuItemName) {
-		MenuItem addMenuItem = new MenuItem("",restaurant.getId(),restaurant.getName(),menuItemName,0,0,"", 0);
-		menuItems.add(addMenuItem);
-		restaurant.addToMenu(addMenuItem);
+		
+		final String finMenuItemName = menuItemName;
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				MenuItem addMenuItem = new MenuItem("", restaurant.getId(), restaurant.getName(), finMenuItemName, 0, 0, "", 0);
+				restaurant.getMenu().add(addMenuItem);
+				FirebaseDao.parseReviews(restaurant);
+				restaurant.addToMenu(addMenuItem);
+				listAdapter.updateData(menuItems);
+			}
+		}).start();
+		listAdapter.notifyDataSetChanged();
+listAdapter.updateData(menuItems);
+	}
+	
+	@Override
+	protected void onResume() {
+		initAdapterList();
 		listAdapter.updateData(menuItems);
+		super.onResume();
 	}
 	
 	@Override
 	public void onComplete(String review, int rating) {
-		MenuItem newMenuItem = menuItems.get(Constants.LAST_MENU_ITEM_POS);
-		newMenuItem.setReview(review);
-		newMenuItem.setRating(rating);
+		int pos = Constants.atomicMenuPos.get();
 		
-		FirebaseDao.createEntry(newMenuItem);
+		menuItems.get(pos).setRating(rating);
+		menuItems.get(pos).setReview(review);
 		
+		FirebaseDao.createEntry(menuItems.get(pos));
+		
+		listAdapter.updateData(menuItems);
 		Intent userHistoryIntent = new Intent(this, UserHistoryActivity.class);
 		startActivity(userHistoryIntent);
 	}

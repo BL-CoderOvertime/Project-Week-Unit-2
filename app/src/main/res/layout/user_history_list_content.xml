@@ -48,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:numStars="5"
                 android:rating="3.5"
+                android:stepSize=".5"
                 style="?attr/ratingBarStyleSmall"
                 android:layout_marginRight="10dp"
                 app:layout_constraintBottom_toBottomOf="@+id/user_history_item_name"

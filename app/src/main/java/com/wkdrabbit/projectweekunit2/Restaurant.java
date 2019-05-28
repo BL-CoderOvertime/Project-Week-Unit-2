@@ -19,27 +19,29 @@ public class Restaurant implements Parcelable {
 	private ArrayList<MenuItem> menu = new ArrayList<>();
 	private URI imageUri;
 	private Bitmap image;
+	private long lastUpdate;
 	
-	public Restaurant(String fbId, int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
+	public Restaurant(String fbId, int id, String name, ArrayList<MenuItem> menu, URI imageUri, long lastUpdate) {
 		this.id = id;
 		this.name = name;
 		this.menu = menu;
 		this.imageUri = imageUri;
+		this.lastUpdate = lastUpdate;
 		
 		menu = new ArrayList<>();
 	}
 	
 	public Restaurant(int id, String name, float distanceTo){
-		this("default",id,name,new ArrayList<MenuItem>(), null);
+		this("default",id,name,new ArrayList<MenuItem>(), null, 0);
 		this.distanceTo = distanceTo;
 	}
 	
 	public Restaurant(int id, String name, ArrayList<MenuItem> menu, URI imageUri) {
-		this("default", id, name, menu, imageUri);
+		this("default", id, name, menu, imageUri, 0);
 	}
 	
 	public Restaurant(int id, String name, ArrayList<MenuItem> menu) {
-		this("default", id, name, menu, null);
+		this("default", id, name, menu, null, 0);
 	}
 	
 	public Restaurant(int id, String name) {
@@ -60,6 +62,7 @@ public class Restaurant implements Parcelable {
 		name = in.readString();
 		//menu = in.readList(menu, List.class.getClassLoader());
 		image = in.readParcelable(Bitmap.class.getClassLoader());
+		lastUpdate = in.readLong();
 	}
 	
 	public static final Creator<Restaurant> CREATOR = new Creator<Restaurant>() {
@@ -135,19 +138,12 @@ public class Restaurant implements Parcelable {
 		dest.writeString(name);
 		//dest.writeList(menu);
 		dest.writeParcelable(image, flags);
+		dest.writeLong(lastUpdate);
 		
 	}
 	
 	public void addToMenu(MenuItem menuItem){
-		
-		menu.add(menuItem);
-		final Restaurant finRestaurant = this;
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				FirebaseDao.updateRestaurant(finRestaurant);
-			}
-		}).start();
+
 	}
 	
 	public void setMenu(ArrayList<MenuItem> menuItems) {

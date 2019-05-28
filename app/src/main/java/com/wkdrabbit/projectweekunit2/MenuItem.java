@@ -92,16 +92,6 @@ public class MenuItem  implements Parcelable {
 		
 		return jsonData;
 	}
-		
-		
-		/*String jsonString = "{\"user_data\":{\"history\":[{\"id\":\"" +
-				String.valueOf(id) + "\",\"name\":\"" +
-				name + "\",\"restaurant_id\":\"" +
-				String.valueOf(resturantId) + "\",\"restaurant_name\":\"" +
-				restaurantName + "\",\"timestamp\":\"" +
-				String.valueOf(System.currentTimeMillis()) + "\",\"rating\":\"" +
-				String.valueOf(rating) + "\"}]}}";*/
-		
 	
 	@Override
 	public int describeContents() {
@@ -121,7 +111,6 @@ public class MenuItem  implements Parcelable {
 		dest.writeInt(totalRatings);
 	}
 	
-	
 	public void setReview(String review) {
 		this.review = review;
 	}
@@ -132,5 +121,9 @@ public class MenuItem  implements Parcelable {
 	
 	public int getTotalRatings() {
 	return totalRatings;
+	}
+	
+	public void setTotalRatings(int totalRatings) {
+	this.totalRatings = totalRatings;
 	}
 }
